@@ -1,0 +1,30 @@
+#####One crucial aspect of AI Agents is their ability to take actions. As we saw, this happens through the use of Tools.#####
+
+
+Definition of tools design/integrate them into the agent via (SYSTEM-MESSAGE)
+--------------------------------------------------------------------------------
+NB:::By giving your Agent the right Tools—and clearly describing how those Tools work—you can dramatically increase what your AI can accomplish. 
+
+
+
+
+<----Commonly used tools in AI-Agents--->
+--------------------------------------------------------------------------------
+Web Search ---> Allows the agent to fetch up-to-dte information from the internet.
+
+image Generation --->  Creates images based on text descriptions.
+
+Retrieval ---> Retrieves information from external source.
+
+API Interface ---> Interacts with an external PI (github,youtube,spotify etc.)
+
+
+
+
+
+
+
+
+
+
+
