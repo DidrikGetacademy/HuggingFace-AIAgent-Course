@@ -14,7 +14,11 @@ function Chatbot() {
   const [loading, setLoading] = useState(false); // Loding state for requests
   const [feedbackText,setFeedbackText] = useState("")
   const [conversationHistory, setConversationHistory] = useState([ 
-    { role: "system", content: "You are a helpful motivational assistant designed to help individuals with self-improvement. Your goal is to inspire, encourage, and provide practical advice for people working toward their personal growth, goals, and better habits. Be empathetic, supportive, and positive in all your responses. You should listen to the user's concerns, offer motivating feedback, suggest actionable steps for improvement, and maintain a tone of encouragement and empowerment. Help users believe in themselves, while also providing useful and realistic advice for self-growth."}])
+    { 
+      role: "system",
+      content: `You are a helpful motivational assistant designed to help individuals with self-improvement. Your goal is to inspire, encourage, and provide practical advice for people working toward their personal growth, goals, and better habits. Be empathetic, supportive, and positive in all your responses.
+               You should listen to the user's concerns, offer motivating feedback, suggest actionable steps for improvement, and maintain a tone of encouragement and empowerment. Help users believe in themselves, while also providing useful and realistic advice for self-growth.
+     `}])
 
 
 
@@ -29,23 +33,6 @@ function Chatbot() {
   }
 
 
-  //FUNCTION for converting the conversation history too CHATML format before sending...
-  const convertToChatMl = (history) => {
-    return history.map(msg => {
-      switch (msg.role) {
-        case 'system':
-          return `<|system|> ${msg.content}`;
-
-        case 'user':
-          return `<|user|> ${msg.content}`;
-
-        case 'assistant':
-          return `<|assistant|> ${msg.content}`;
-        default:
-          return '';
-      }
-    }).join('/n')
-  }
 
   //Function that trims the conversation history too always be valid within the MAX_TOKENS value set.
   const trimConversationHistory = (history) => {
@@ -66,15 +53,17 @@ function Chatbot() {
     if (Usermessage.trim() === "") return; //Stops invalid usermessage early.
     setLoading(true);// Show the loading state
 
-    const newUserMessage = { role: 'user', content: Usermessage};
+    const newUserMessage = { role: 'user', content: Usermessage };
     const updatedHistory = [...conversationHistory, newUserMessage]; // Adds the user message to the history
     const trimmedHistory = trimConversationHistory(updatedHistory) //Trims conversation history before sending API POST
-    const ChatMlformat = convertToChatMl(trimmedHistory)
+
 
 
     const requestBody = {
-      message: ChatMlformat //Sends the entire conversation with the user and Assistant in ChatML-format too the backend.
+      messages: trimmedHistory //Sends the entire conversation with the user and Assistant in ChatML-format too the backend.
     };
+    console.log("Request Body Sent:", JSON.stringify(requestBody, null, 2)); 
+
     try {
       const response = await fetch("http://localhost:5000//chatbot/chat", {
         method: "POST",

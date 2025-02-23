@@ -169,7 +169,7 @@ You are a helpful AI assistant named SmolLM, trained by Hugging Face
 
 Step(3)
 ------------------------------------------
-The Rendered Output (Input for the Model)
+The Rendered Output the output from the chat_template (Input for the Model)
 ------------------------------------------
 This is the final string that the model receives:
 <|im_start|>system
@@ -185,4 +185,7 @@ How do I use it ?<|im_end|>
 
 KEYNOTES::: The easiest way to ensure your LLM receives a conversation correctly formatted is to use the chat_template from the model’s tokenizer.
 Check out python file ##Chat_Template.py## for exsample.
+
+
+
 
