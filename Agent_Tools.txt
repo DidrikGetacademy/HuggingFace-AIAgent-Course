@@ -170,13 +170,27 @@ All of these details are important. let's put them together in a text string tha
 Reminder: This textual description is what we want the LLM to know about the tool.
 [Textual description]
 Tool Name: calculator, Description: Multiply two integers., Arguments: a: int, b: int, Outputs: int
-
-
-When we pass the previous string as part of the input to the LLM, the model will recognize it as a tool, If we want to provide additional tools, we must be consistent and always use the same format. This process can be fragile, and we might accidentally overlook some details
+When we pass the previous string as part of the input to the LLM,(a part In the system message) the model will recognize it as a tool, If we want to provide additional tools, we must be consistent and always use the same format. This process can be fragile, and we might accidentally overlook some details
+exsample: of this check Agent_Tools.py --> [Tools: 1.01]
 
 Is there a better way? yes ---> auto formatting tool sections
 
 
+
+
+
+
 <---- Auto-formatting Tool sections---->
 -------------------------------------------------------------------
-
+-Our tool was written in python and the implementation already provides everything we need.
+A descriptive name of what it does: calculator
+A longer description, provided by the function’s docstring comment: Multiply two integers.
+The inputs and their type: the function clearly expects two ints.
+The type of the output.
+There’s a reason people use programming languages: they are expressive, concise, and precise.
+We could provide the Python source code as the specification of the tool for the LLM, but the way the tool is implemented does not matter. All that matters is:
+its name, what it does, the inputs it expects and the output it provides.
+We will leverage Python’s introspection features to leverage the source code and build a tool description automatically for us.
+ All we need is that the tool implementation uses 
+ type hints, docstrings, and sensible function names.
+We will write some code to extract the relevant portions from the source code. see python file: Agent_Tools.py --> [tools: 1.02]
