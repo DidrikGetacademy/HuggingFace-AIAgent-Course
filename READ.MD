@@ -3,7 +3,7 @@ This repository is my personal learning space.
 Feel free to explore, 
 but keep in mind that these notes are tailored to my understanding and may contain rough ideas and experimental code.
 
-
+Most of the facts is from the course itself, but i have also used LLM too reason and understand better some of the context from the course. 
 
 
 📚 References
