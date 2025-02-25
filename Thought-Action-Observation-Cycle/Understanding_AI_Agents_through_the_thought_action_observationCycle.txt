@@ -1,5 +1,5 @@
 Understanding AI Agents through the [Thought-Action-Observation Cycle]
----------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 The Core Components--->
 Agents work in a continuous cycle of:  thinking (thought) --> acting(Act) and observing(Observe)
 
@@ -17,12 +17,12 @@ Agents work in a continuous cycle of:  thinking (thought) --> acting(Act) and ob
 
 
 The Thought-Action-Observation Cycle
----------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 The three components work together in a continious loop. to use an analogy from programming, the agent uses a (while loop): the loop continues until the objective of the agent has been fulfilled.
 
 
 LLM Thought Process Visualised
--------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 Query --> Think ---> Action ---> Observation ---> Think/End  #Finish or another action needed?
 
 

@@ -1,0 +1,53 @@
+Thought: Internal Reasoning and the Re-Act approach
+---------------------------------------------------------------------------------------------
+This Section:
+[
+We dive into the inner workings of an AI Agent- its ability to reason and plan.
+✅We'll explore how the agent leverages its internal dialogue to analyze information,
+✅break down complex problems into manageable steps, and decide what action to take next.
+✅Additionally we introduce the Re-Act approach, a prompting technique that encourages the model to think step by step before acting
+]
+
+📌Thoughts --->  represent the Agent's internal reasoning and planning processes to solve the ask 
+•This utilises the agent's Large Language Model (LLM) capacity to analyze information when presented in its prompt...
+think of it as the Agent's internal dialogue, where it considers the task at hand and strategizes its approach.
+The Agent's thoughts are responsible for accessing current observation and decide what the next action(s) should be.
+Through this process, the agent can break down complex problems into smaller, more managageable steps, reflect on past experiences, and continuosly adjust its plans based on new information
+
+
+
+[Deeper explanation]
+📌The Agent:
+The Agent is the overarching entity that plans, makes decisions, and directs the process for solving a task.
+You can view it as a kind of strategist or leader.
+It receives observations, 
+assesses the situation, 
+and determines which actions should be taken. The Agent's "thoughts" – or its internal dialogue and planning – is a concept used to describe how it breaks down complex tasks into smaller, manageable steps.
+
+📌The LLM-model (Large Language Model):
+This is the engine that generates text based on the vast amounts of data it has been trained on. 
+It has the ability to analyze and produce responses in natural language.
+When we refer to the "Agent's thoughts," we are often talking about how the Agent uses the LLM-model to simulate internal reasoning – a "chain-of-thought."
+This means that the Agent essentially delegates the computational and linguistic processing to the LLM-model.
+
+
+Here are some exsamples of common thoughts: 
+Type of Thought  |       Exsample    
+---------------------------------------------          
+Planning         | “I need to break this task into three steps: [1. gather data]  [2. analyze trends]  [3. generate report]”           
+Analysis         | “Based on the error message, the issue appears to be with the database connection parameters”
+Decision Making  | “Given the user’s budget constraints, I should recommend the mid-tier option”
+Problem Solving  | “To optimize this code, I should first profile it to identify bottlenecks”
+MemoryIntegration| “The user mentioned their preference for Python earlier, so I’ll provide examples in Python”
+Self-Reflection  | “My last approach didn’t work well, I should try a different strategy”
+Goal Setting     | “To complete this task, I need to first establish the acceptance criteria”
+Prioritization   | “The security vulnerability should be addressed before adding new features”
+
+📌Note: In the case of LLMs fine-tuned for function calling, the thought process is optional. in case you're not familiar with function-calling, there will be more details in the action section.
+
+
+
+
+The Re-Act Approach
+---------------------------------------------------------------------------------------------
+A key method is the ReAct Approah
