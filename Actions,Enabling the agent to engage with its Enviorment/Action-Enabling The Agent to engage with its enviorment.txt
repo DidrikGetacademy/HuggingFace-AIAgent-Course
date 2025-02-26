@@ -16,8 +16,7 @@ We’ll cover how actions are represented (using JSON or code), the importance o
 
 
 
-
-✅Types of Agent Actions
+✅Types of Agent Actions✅
 📌There are multiple types of Agents that take actions differently:
 -------------------------------------------------------------------------------------------
 Type of Agent         |       Description    
@@ -36,3 +35,158 @@ Enviorment Interaction | Manipulating digital interfaces or controlling physical
 communication          | Engaging with users via chat or collaborating with other agents.
 
 
+
+
+
+📌One crucial part of an agent is the (Aility to STOP generating new tokens when an action is complete) and that is true for all formats of agent:
+JSON,code, function-calling. 
+•This prevents unintended output and ensures that the agent's response is clear and precise 
+
+
+📌The LLM only handles text and uses it to describe the action it wants to take and the parameters to supply to the tool.
+
+
+
+
+
+✅The Stop and Parse Approach✅
+📌one key method for implementing actions is the Stop and parse approach. this method ensures that the agent's output is structed and predictale
+-------------------------------------------------------------------------------------------
+1. Generation in a structured Format
+•The agent outputs its intended action in a clear, predetermined format (JSON or code)
+
+2. Halting Further Generation
+•Once the action is complete, the agent stop generating additional tokens. this prevents extra or erroneous output. 
+
+3. Parsing the output
+•An external parser reads the formatted action, determines which tool to call, and extracts the required parameters.
+
+
+[For example] ---> an agent needing to check the weather might output:
+Thought: I need to check the current weather for New York.
+Action: 
+{
+    "action": "get_weather",
+    "action_input": {"location": "New York"}
+}
+
+•The framework can then easily parse the name of the function to call and the arguments to apply.
+•This clear, machine-readable format minimizes errors and enables external tools to accurately process the agent’s command.
+
+📌 Function-calling agents operate similarly by structuring each action so that a designated function is invoked with the correct arguments. We’ll dive deeper into those types of Agents in a future Unit.
+
+
+
+
+📌I stedet for å generere en enkel JSON-melding, genererer en kodeagent en faktisk kjørbar kodeblokk, typisk skrevet i et høynivåspråk som Python.
+Denne koden kan direkte utføres for å utføre ønsket handling, uten at en separat parser trenger å tolke en strukturert melding.
+
+
+
+✅Code Agents
+-------------------------------------------------------------------------------------------
+An alternative approach is using Code Agents.The idea is:
+instead of outputting a simple JSON object, a Code Agent generates an executable code block—typically in a high-level language like Python.
+
+
+
+
+
+
+
+✅LLM Agent using [Text/JSON] as action 
+-------------------------------------------------------------------------------------------
+Process:
+
+Thinks: "I should calculate the phone price in USD for each country, then find the most cost-effective country."
+
+Takes step-by-step actions:
+
+Calls lookup_rates(country) for each country (e.g., Germany, Japan, etc.).
+
+Calls lookup_phone_price(model, country) for each country.
+
+Calls convert_and_tax(price, exchange_rate, tax_rate) to get the final price.
+
+Calls additional APIs (omitted) for shipping costs and final price calculations.
+
+Requires multiple sequential API calls, increasing complexity.
+
+Final Response: The most cost-effective country is Japan, with a final price of 904.00 USD.
+
+Drawbacks:
+
+More interactions and API calls required.
+
+Higher latency due to sequential processing.
+
+No structured control flow; steps are independent JSON calls.
+
+
+
+
+
+
+✅CodeAct: LLM Agent using [Code] as Action
+-------------------------------------------------------------------------------------------
+Process:
+
+Thinks: "I should calculate the phone price in USD for each country, then find the most cost-effective country."
+
+Uses Python code to handle the entire workflow efficiently:
+
+Defines countries = ['USA', 'Japan', 'Germany', 'India'].
+
+Iterates over countries with a loop.
+
+Calls necessary functions (lookup_rates, lookup_phone_price, convert_and_tax, estimate_shipping_cost, estimate_final_price).
+
+Stores results in final_prices dictionary.
+
+Finds the minimum price using min(final_prices, key=final_prices.get).
+
+Prints the most cost-effective country and price.
+
+Requires fewer interactions and directly processes data within a structured code execution.
+
+Final Response: The most cost-effective country is Japan, with a final price of 904.00 USD.
+
+Advantages:
+
+Fewer actions required (eliminates redundant API calls).
+
+Improved control flow via loops and structured logic.
+
+Reuses built-in Python functions (e.g., min() for finding the lowest price).
+
+Faster execution as all operations run within a single script.
+
+
+
+
+📌Key Takeaways:
+✅Expressiveness: Code can naturally represent complex logic, including loops, conditionals, and nested functions, providing greater flexibility than JSON.
+✅Modularity and Reusability: Generated code can include functions and modules that are reusable across different actions or tasks.
+✅Enhanced Debuggability: With a well-defined programming syntax, code errors are often easier to detect and correct.
+✅Direct Integration: Code Agents can integrate directly with external libraries and APIs, enabling more complex operations such as data processing or real-time decision making.
+✅ CodeAct is more efficient by leveraging structured programming.
+✅ Fewer API calls, reducing latency and resource usage.
+✅ Better control over execution flow compared to fragmented JSON-based calls.
+✅ Reuses existing programming infrastructure, improving performance and maintainability.
+
+[Conclusion]
+The CodeAct approach is superior as it simplifies complex operations, reduces interactions, and leverages Python’s control structures, making it more efficient for decision-making tasks like price comparisons.
+
+
+
+
+#####EXSAMPLE CODE-AGENT#######
+a Code Agent tasked with fetching the weather might generate the following Python snippet:
+-------------------------------------------------------------------------------------------
+Code Agent Exsample: Retrieve Weather Information ---> see file Actions.py 1.01
+
+
+📌We learned that actions bridge an agent’s internal reasoning and its real-world interactions by executing clear, structured tasks—whether 
+through JSON, code, or function calls.
+This deliberate execution ensures that each action is precise and ready for external processing via the stop and parse approach.
+In the next section, we will explore Observations to see how agents capture and integrate feedback from their environment.
