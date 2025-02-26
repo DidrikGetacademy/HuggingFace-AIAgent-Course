@@ -49,5 +49,85 @@ Prioritization   | “The security vulnerability should be addressed before addi
 
 
 The Re-Act Approach
----------------------------------------------------------------------------------------------
-A key method is the ReAct Approah
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+A key method is the ReAct Approah, wich is the concatenation of "Reasoning" (Think) with "Acting" (Act).
+ReAct is a simple prompting technique that appends "let's think step by step" before letting the LLM decode the next tokens.
+
+indeed prompting the model to think "step by step" encourages the decoding process toward next tokens [that generate a plan] rather than a final solution, 
+since the model is encouraged to [decompose] the problem into sub-tasks.
+
+📌this allows the model to consider sub-steps in more detail, wich in general leads to less errors than trying to generate the final solution directly
+
+
+
+
+
+
+
+This image presents a comparison of different reasoning approaches used in answering a mathematical problem. The approaches include Few-shot, Few-shot-CoT (Chain of Thought), Zero-shot, and Zero-shot-CoT. Below is a breakdown of each approach and its effectiveness:
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+✅Few-shot (a):
+
+•The model is given an example of a similar problem before attempting the new question.
+
+•The response is incorrect because the model fails to break down the reasoning steps properly.
+
+•Example Problem: A juggler can juggle 16 balls. Half are golf balls, and half of the golf balls are blue. The model incorrectly answers "8" instead of "4."
+
+
+
+
+✅Few-shot-CoT (b):
+
+•The model is provided with an example that demonstrates step-by-step reasoning.
+
+•It correctly solves the problem by first determining that there are 8 golf balls and then finding that half of them are blue, leading to the correct answer of "4."
+
+•This method improves accuracy by encouraging structured reasoning.
+
+
+
+
+
+✅Zero-shot (c):
+
+•The model is given the question without prior examples or reasoning steps.
+
+•It provides an incorrect response due to the lack of structured reasoning.
+
+•The answer "8" is incorrect because the model does not break down the steps needed to reach the correct answer.
+
+
+
+
+✅Zero-shot-CoT (d) (Ours):
+
+•The model is instructed to "think step by step" before answering.
+
+•It correctly determines that there are 8 golf balls and that half of them are blue, leading to the correct answer of "4."
+
+•This approach demonstrates that prompting the model to explicitly reason through the problem improves accuracy without needing prior examples.
+
+
+NOTE ----> The (d) is an exsample of Re-Act approach where we prompt ["let's think step by step"]
+
+
+
+
+📌Key Takeaways:
+
+The Few-shot and Zero-shot methods struggle with complex reasoning.
+
+The Chain of Thought (CoT) approach significantly improves accuracy by encouraging step-by-step problem-solving.
+
+The Zero-shot-CoT method provides an effective solution without requiring prior examples, making it a powerful approach for reasoning tasks.
+
+This comparison highlights the importance of structured reasoning in AI models and the effectiveness of the CoT method in enhancing problem-solving accuracy.
+
+
+
+CHAIN-OF-THOUGHT technique:
+We have recently seen a lot of interest for reasoning strategies. This is what's behind models like Deepseek R1 or OpenAI's o1, which have been fine-tuned to "think before answering".
+These models have been trained to always include specific thinking sections (enclosed between <think> and </think> special tokens).
+ This is not just a prompting technique like ReAct, but a training method where the model learns to generate these sections after analyzing thousands of examples that show what we expect it to do.
+
