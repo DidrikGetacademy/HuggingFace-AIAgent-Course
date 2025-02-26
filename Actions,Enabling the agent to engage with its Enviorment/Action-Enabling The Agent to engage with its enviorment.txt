@@ -8,6 +8,31 @@ We’ll cover how actions are represented (using JSON or code), the importance o
 
 
 📌Actions are the concrete steps an AI agent takes to interact with its enviorment
+-------------------------------------------------------------------------------------------
+•Whether it's browsing the web for information or controll a physical device, each action is deliberate operation executed by the agent. 
+•For exsample: 
+✅an agent assisting with customer service might retrieve customer data, offer support articles or transfer issues to a human representive. 
 
 
-✅📌•
+
+
+
+✅Types of Agent Actions
+📌There are multiple types of Agents that take actions differently:
+-------------------------------------------------------------------------------------------
+Type of Agent         |       Description    
+---------------------------------------------      
+JSON Agent            |The Action to take is specified in JSON format.
+Code Agent            |The Agent writes a code block that is interpreted externally.
+Function-Calling-Agent|It is a subcategory of the JSON Agent wich has been fine-Tuned to generate a new message for each action.
+
+
+📌Actions themselves can serve many purposes
+Type of Action         |       Description    
+---------------------------------------------      
+Information Gathering  | Performing web searches, querying databases, or retrieving documents.
+Tool Usage             | Making API calls, running calculations, and executing code.
+Enviorment Interaction | Manipulating digital interfaces or controlling physical devices.
+communication          | Engaging with users via chat or collaborating with other agents.
+
+
