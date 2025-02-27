@@ -83,10 +83,60 @@ Denne koden kan direkte utføres for å utføre ønsket handling, uten at en sep
 
 
 
-✅Code Agents
+
+
+
+
+
+
+####Code Agents####
 -------------------------------------------------------------------------------------------
 An alternative approach is using Code Agents.The idea is:
 instead of outputting a simple JSON object, a Code Agent generates an executable code block—typically in a high-level language like Python.
+
+
+
+
+
+
+✅ Function-Calling-Agent (LLM Agent som bruker funksjonskall som handling)
+Prosess:
+
+Tanker:
+Agenten formulerer en klar intensjon, for eksempel:
+"Jeg bør kalkulere telefonprisen i USD for hvert land, og deretter finne det mest kostnadseffektive landet."
+
+Steg-for-steg handlinger:
+I motsetning til en ren JSON-agent, genererer en Function-Calling-Agent separate meldinger for hvert funksjonskall, slik at hvert kall blir eksplisitt og isolert:
+
+1.Første kall: Agenten kaller for eksempel lookup_rates(country) for hvert land (f.eks. Tyskland, Japan, etc.).
+2.Andre kall: Den genererer et nytt melding for å kalle lookup_phone_price(model, country) for å hente prisinformasjon.
+3.Tredje kall: Deretter kalles convert_and_tax(price, exchange_rate, tax_rate) for å beregne den endelige prisen etter valutakonvertering og skatt.
+4.Ytterligere kall: Ekstra API-kall kan utføres for å inkludere fraktkostnader og andre relevante parametere.
+📌Etter hvert kall stopper agenten genereringen av tokens, slik at den mottatte responsen kan parses og den neste funksjonen kan kalles. Dette gir en sekvensiell, men strukturert, kontrollflyt.
+
+{
+    "function": "lookup_rates",
+    "parameters": {"country": "Japan"}
+}
+•Etter å ha mottatt responsen, fortsetter agenten med neste kall
+{
+    "function": "lookup_phone_price",
+    "parameters": {"model": "XYZ", "country": "Japan"}
+}
+
+📌Fordeler:
+Strukturert prosess:
+Hvert funksjonskall er tydelig adskilt, noe som minimerer risikoen for feil ved at meldingene ikke blandes sammen.
+
+Forbedret feilhåndtering:
+Ved at hvert kall behandles som en egen enhet, blir det enklere å identifisere og rette opp eventuelle feil eller misforståelser.
+
+Modularitet:
+Denne tilnærmingen gjør det enklere å integrere nye funksjoner ettersom hvert kall er selvstendig og lett å teste.
+
+
+
 
 
 
@@ -121,6 +171,9 @@ More interactions and API calls required.
 Higher latency due to sequential processing.
 
 No structured control flow; steps are independent JSON calls.
+
+
+
 
 
 
@@ -162,8 +215,6 @@ Reuses built-in Python functions (e.g., min() for finding the lowest price).
 Faster execution as all operations run within a single script.
 
 
-
-
 📌Key Takeaways:
 ✅Expressiveness: Code can naturally represent complex logic, including loops, conditionals, and nested functions, providing greater flexibility than JSON.
 ✅Modularity and Reusability: Generated code can include functions and modules that are reusable across different actions or tasks.
@@ -175,7 +226,11 @@ Faster execution as all operations run within a single script.
 ✅ Reuses existing programming infrastructure, improving performance and maintainability.
 
 [Conclusion]
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 The CodeAct approach is superior as it simplifies complex operations, reduces interactions, and leverages Python’s control structures, making it more efficient for decision-making tasks like price comparisons.
+
+
+
 
 
 
