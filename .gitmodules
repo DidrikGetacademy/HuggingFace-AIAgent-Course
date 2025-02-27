@@ -1,0 +1,3 @@
+[submodule "First_agent_template_DidrikSkjelbred"]
+	path = First_agent_template_DidrikSkjelbred
+	url = https://huggingface.co/spaces/didrikSkjelbred/First_agent_template

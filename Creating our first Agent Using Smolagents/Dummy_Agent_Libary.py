@@ -1,13 +1,17 @@
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 import os 
+from huggingface_hub import login
+
+
 #Serverless API
 #-----------------------------------------
 #In the Hugging Face ecosystem, there is a convenient future called Serverless API that allows you to easily run inference on many models. There's no installation or deployment required. 
 ##You need a token from https://hf.co/settings/tokens, ensure that you select 'read' as the token type. If you run this on Google Colab, you can set it up in the "settings" tab under "secrets". Make sure to call it "HF_TOKEN"
 
 
-#Getting the HF_TOKEN from .env 
+#Getting Values from .env 
+Huggingface_Token = os.getenv("Hugging_face_login")
 load_dotenv()
 hf_token = os.getenv("HF_TOKEN")
 os.environ["HF_TOKEN"]=hf_token
@@ -64,6 +68,8 @@ def Huggingface_EOS_token():
 
     print(output)  #output we got: ...Paris!
     #Output expected from the course: [The capital of France is paris.]
+
+
 
 
 
@@ -143,7 +149,13 @@ def Dummy_Agent_text_generation():
 
 
 
+
+
+
+
+
 #we can also do it like this, which is what happends inside the chat method: 
+#📌you need access to huggingfaces repo, ask for permission, you will most likely get permission within an hour 
 def Dummy_Agent_Chat_method():
     from transformers import AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-3B-Instruct")
@@ -152,12 +164,86 @@ def Dummy_Agent_Chat_method():
 
     SYSTEM_PROMPT = """
     <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+        Answer the following questions as best you can. You have access to the following tools:
+
+    get_weather: Get the current weather in a given location
+
+    The way you use the tools is by specifying a json blob.
+    Specifically, this json should have a `action` key (with the name of the tool to use) and a `action_input` key (with the input to the tool going here).
+
+    The only values that should be in the "action" field are:
+    get_weather: Get the current weather in a given location, args: {"location": {"type": "string"}}
+    example use : 
+
+    {{
+    "action": "get_weather",
+    "action_input": {"location": "New York"}
+    }}
+
+    ALWAYS use the following format:
+
+    Question: the input question you must answer
+    Thought: you should always think about one action to take. Only one action at a time in this format:
+    Action:
+
+    $JSON_BLOB (inside markdown cell)
+
+    Observation: the result of the action. This Observation is unique, complete, and the source of truth.
+    ... (this Thought/Action/Observation can repeat N times, you should take several steps when needed. The $JSON_BLOB must be formatted as markdown and only use a SINGLE action at a time.)
+
+    You must always end your output with the following format:
+
+    Thought: I now know the final answer
+    Final Answer: the final answer to the original input question
+
+    Now begin! Reminder to ALWAYS use the exact characters `Final Answer:` when you provide a definitive answer. 
+        """
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": "What's the weather in London ?"},
+    ]
+
+    prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    output = client.text_generation(
+        prompt,
+        max_new_tokens=200,
+       #stop=["Observation:"] # Let's stop before any actual function is called
+    )
+    print("output",output)
+
+
+#📌Do you see the issue in output??
+"The answear was hallucinated by the model, we need to stop to actually execute the function! Let's now stop on"
+"[Observation” so that we don’t hallucinate the actual function response.]"
+
+
+
+
+
+
+
+
+
+
+#get_weather TOOL (Dummy Function)
+def get_weather(location):
+    return f"the weather in {location} is sunny with low temperatures. \n"
+
+
+
+
+def Dummy_Agent_with_dummy_tool_getweather():
+    from transformers import AutoTokenizer
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-3B-Instruct")
+    client = InferenceClient("meta-llama/Llama-3.2-3B-Instruct")
+    SYSTEM_PROMPT = """
+   <|begin_of_text|><|start_header_id|>system<|end_header_id|>
     Answer the following questions as best you can. You have access to the following tools:
 
     get_weather: Get the current weather in a given location
 
     The way you use the tools is by specifying a json blob.
-    Specifically, this json should have an `action` key (with the name of the tool to use) and a `action_input` key (with the input to the tool going here).
+    Specifically, this json should have a `action` key (with the name of the tool to use) and a `action_input` key (with the input to the tool going here).
 
     The only values that should be in the "action" field are:
     get_weather: Get the current weather in a given location, args: {"location": {"type": "string"}}
@@ -198,16 +284,36 @@ def Dummy_Agent_Chat_method():
     output = client.text_generation(
         prompt,
         max_new_tokens=200,
+        stop=["Observation:"] # Let's stop before any actual function is called
     )
-    print(output)
+    print("initial output",output)
+
+    weather_output = get_weather('London')
+    print("Function output: ",weather_output)
+
+    new_prompt = prompt + output + weather_output
+
+    final_output = client.text_generation(
+        new_prompt,
+        max_new_tokens=200
+    )
+    print(final_output)
+
+
+
+
+
 
 
 if __name__ == "__main__":
+    #login(Huggingface_Token)
     #HuggingFace_Serverless_API()
     #HuggingFace_Serverless_API_Public_endpoint()
     #Huggingface_EOS_token()
     #huggingface_with_chat_Template()
-   # Dummy_Agent_text_generation()
-    Dummy_Agent_Chat_method()
+    #Dummy_Agent_text_generation()
+    #Dummy_Agent_Chat_method()
+    #print(get_weather('London'))
+    Dummy_Agent_with_dummy_tool_getweather()
 
-
+#📌We learned how we can create Agents from scratch using Python code, and we saw just how tedious that process can be. Fortunately, many Agent libraries simplify this work by handling much of the heavy lifting for you.
