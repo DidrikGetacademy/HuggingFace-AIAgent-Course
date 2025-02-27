@@ -184,3 +184,6 @@ GradioUI(agent).launch()
 #The best way to learn is to try, so don’t hesitate to update it, add more tools, try with another model, etc.
 
 #In the next section, you’re going to fill the final Quiz and get your certificate!
+
+
+#📌Check out folder: First_agent_template_DidrikSkjelbred
