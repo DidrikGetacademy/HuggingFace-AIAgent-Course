@@ -237,8 +237,8 @@ def Dummy_Agent_with_dummy_tool_getweather():
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-3B-Instruct")
     client = InferenceClient("meta-llama/Llama-3.2-3B-Instruct")
     SYSTEM_PROMPT = """
-   <|begin_of_text|><|start_header_id|>system<|end_header_id|>
-    Answer the following questions as best you can. You have access to the following tools:
+    <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+        Answer the following questions as best you can. You have access to the following tools:
 
     get_weather: Get the current weather in a given location
 
@@ -269,11 +269,6 @@ def Dummy_Agent_with_dummy_tool_getweather():
 
     Thought: I now know the final answer
     Final Answer: the final answer to the original input question
-
-    Now begin! Reminder to ALWAYS use the exact characters `Final Answer:` when you provide a definitive answer. 
-    <|eot_id|><|start_header_id|>user<|end_header_id|>
-    What's the weather in London ?
-    <|eot_id|><|start_header_id|>assistant<|end_header_id|>
     """
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
@@ -289,7 +284,7 @@ def Dummy_Agent_with_dummy_tool_getweather():
     print("initial output",output)
 
     weather_output = get_weather('London')
-    print("Function output: ",weather_output)
+    print("Get_weather output: ",weather_output)
 
     new_prompt = prompt + output + weather_output
 
