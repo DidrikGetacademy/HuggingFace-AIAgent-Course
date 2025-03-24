@@ -1,15 +1,29 @@
-#For the model, we’ll rely on HfApiModel, which provides access to Hugging Face’s Serverless Inference API. The default model is "Qwen/Qwen2.5-Coder-32B-Instruct", which is performant and available for fast inference, but you can select any compatible model from the Hub.
-#Learn more about how to build code agents in the smolagents documentation "https://huggingface.co/docs/smolagents"
+####TOOL-CALLING AGENT - SmolAgent####
+
+#Inspecting Our Party Preparator Agent with OpenTelemetry and Langfuse 📡#
+#✅OpenTelemetry standard for instrumenting agent runs, allowing seamless inspection and logging.
+#✅With the help of Langfuse and the SmolagentsInstrumentor, Alfred can easily track and analyze his agent’s behavior.
+#Libaries---> pip install opentelemetry-sdk opentelemetry-exporter-otlp openinference-instrumentation-smolagents
+import os
+import base64
 from huggingface_hub import login
-from smolagents import CodeAgent, DuckDuckGoSearchTool, tool, HfApiModel
-import numpy as np
-import time
-import datetime
+from smolagents import CodeAgent, DuckDuckGoSearchTool, FinalAnswerTool, HfApiModel, Tool, tool, VisitWebpageTool,ToolCallingAgent
+from opentelemetry.sdk.trace import TracerProvider
+from openinference.instrumentation.smolagents import SmolagentsInstrumentor
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 
-login()
 
-# TOOLS
-from smolagents import CodeAgent, DuckDuckGoSearchTool, FinalAnswerTool, HfApiModel, Tool, tool, VisitWebpageTool
+LANGFUSE_PUBLIC_KEY="pk-lf-5dd05a81-a8cc-4975-ac6b-c346f9e3af7c"
+LANGFUSE_SECRET_KEY="sk-lf-be175ad3-038d-454b-85c8-8a933ce899b8"
+LANGFUSE_AUTH=base64.b64encode(f"{LANGFUSE_PUBLIC_KEY}:{LANGFUSE_SECRET_KEY}".encode()).decode()
+os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "https://cloud.langfuse.com/api/public/otel" 
+os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = f"Authorization=Basic {LANGFUSE_AUTH}"
+trace_provider = TracerProvider()
+trace_provider.add_span_processor(SimpleSpanProcessor(OTLPSpanExporter()))
+SmolagentsInstrumentor().instrument(tracer_provider=trace_provider)
+
+
 
 @tool
 def suggest_menu(occasion: str) -> str:
@@ -35,16 +49,15 @@ def catering_service_tool(query: str) -> str:
     Args:
         query: A search term for finding catering services.
     """
-    # Example list of catering services and their ratings
+
     services = {
         "Gotham Catering Co.": 4.9,
         "Wayne Manor Catering": 4.8,
         "Gotham City Events": 4.7,
     }
     
-    # Find the highest rated catering service (simulating search query filtering)
+
     best_service = max(services, key=services.get)
-    
     return best_service
 
 class SuperheroPartyThemeTool(Tool):
@@ -73,17 +86,18 @@ class SuperheroPartyThemeTool(Tool):
 
 
 # Alfred, the butler, preparing the menu for the party
-agent = CodeAgent(
+agent = ToolCallingAgent(
     tools=[
         DuckDuckGoSearchTool(), 
         VisitWebpageTool(),
         suggest_menu,
         catering_service_tool,
-        SuperheroPartyThemeTool()
+        SuperheroPartyThemeTool(),
+        FinalAnswerTool()
     ], 
     model=HfApiModel(),
     max_steps=10,
     verbosity_level=2
 )
 
-agent.run("Give me the best playlist for a party at the Wayne's mansion. The party idea is a 'villain masquerade' theme")
+agent.run("Search for the best music recommendations for a party at the Wayne's mansion.")

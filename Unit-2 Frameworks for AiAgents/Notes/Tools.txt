@@ -1,0 +1,43 @@
+✅To interact with a tool, the LLM needs an interface description with these key components:
+
+Name: What the tool is called
+Tool description: What the tool does
+Input types and descriptions: What arguments the tool accepts
+Output type: What the tool returns
+
+For instance, while preparing for a party at Wayne Manor, Alfred needs various tools to gather information - from searching for catering services to finding party theme ideas. Here’s how a simple search tool interface might look:
+
+Name: web_search
+Tool description: Searches the web for specific queries
+Input: query (string) - The search term to look up
+Output: String containing the search results
+
+
+✅In smolagents, tools can be defined in two ways:
+Using the @tool decorator for simple function-based tools
+Creating a subclass of Tool for more complex functionality
+
+
+
+
+
+✅Default Toolbox
+smolagents comes with a set of pre-built tools that can be directly injected into your agent. The default toolbox includes:
+
+PythonInterpreterTool
+FinalAnswerTool
+UserInputTool
+DuckDuckGoSearchTool
+GoogleSearchTool
+VisitWebpageTool
+Alfred could use various tools to ensure a flawless party at Wayne Manor:
+
+First, he could use the DuckDuckGoSearchTool to find creative superhero-themed party ideas.
+
+For catering, he’d rely on the GoogleSearchTool to find the highest-rated services in Gotham.
+
+To manage seating arrangements, Alfred could run calculations with the PythonInterpreterTool.
+
+Once everything is gathered, he’d compile the plan using the FinalAnswerTool.
+
+With these tools, Alfred guarantees the party is both exceptional and seamless. 🦇💡
