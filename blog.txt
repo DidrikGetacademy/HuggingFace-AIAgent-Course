@@ -1,1 +1,0 @@
-We’re going to get deeper into smolagents in the next Unit. Meanwhile, you can also check this blog post: https://huggingface.co/blog/smolagents or the library’s repo in GitHub.
