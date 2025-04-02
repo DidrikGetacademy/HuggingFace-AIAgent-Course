@@ -1,0 +1,1 @@
+https://huggingface.co/learn/agents-course/unit2/smolagents/retrieval_agents

@@ -1,0 +1,104 @@
+
+
+class smolagents.TransformersModel
+----------------------------------------------------------------------------
+Parameters
+
+-model_id (str) — The Hugging Face model ID to be used for inference. This can be a path or model identifier from the Hugging Face model hub. For example, "Qwen/Qwen2.5-Coder-32B-Instruct".
+-device_map (str, optional) — The device_map to initialize your model with.
+-torch_dtype (str, optional) — The torch_dtype to initialize your model with.
+-trust_remote_code (bool, default False) — Some models on the Hub require running remote code: for this model, you would have to set this flag to True.
+-kwargs (dict, optional) — Any additional keyword arguments that you want to use in model.generate(), for instance max_new_tokens or device.
+-**kwargs — Additional keyword arguments to pass to model.generate(), for instance max_new_tokens or device.
+
+
+
+
+
+
+
+
+
+
+
+
+class smolagents.HfApiModel
+----------------------------------------------------------------------------
+The HfApiModel wraps huggingface_hub’s InferenceClient for the execution of the LLM. It supports both HF’s own Inference API as well as all Inference Providers available on the Hub.
+Parameters
+
+-model_id (str, optional, default "Qwen/Qwen2.5-Coder-32B-Instruct") — The Hugging Face model ID to be used for inference. This can be a model identifier from the Hugging Face model hub or a URL to a deployed Inference Endpoint. Currently, it defaults to "Qwen/Qwen2.5-Coder-32B-Instruct", but this may change in the future.
+-provider (str, optional) — Name of the provider to use for inference. Can be "replicate", "together", "fal-ai", "sambanova" or "hf-inference". defaults to hf-inference (HF Inference API).
+-token (str, optional) — Token used by the Hugging Face API for authentication. This token need to be authorized ‘Make calls to the serverless Inference API’. If the model is gated (like Llama-3 models), the token also needs ‘Read access to contents of all public gated repos you can access’. If not provided, the class will try to use environment variable ‘HF_TOKEN’, else use the token stored in the Hugging Face CLI configuration.
+-timeout (int, optional, defaults to 120) — Timeout for the API request, in seconds.
+-custom_role_conversions (dict[str, str], optional) — Custom role conversion mapping to convert message roles in others. Useful for specific models that do not support specific message roles like “system”.
+-**kwargs — Additional keyword arguments to pass to the Hugging Face API.
+
+
+
+
+
+
+
+
+
+
+
+LiteLLMModel
+----------------------------------------------------------------------------
+The LiteLLMModel leverages LiteLLM to support 100+ LLMs from various providers. You can pass kwargs upon model initialization that will then be used whenever using the model, for instance below we pass temperature.
+
+Parameters
+
+-model_id (str) — The model identifier to use on the server (e.g. “gpt-3.5-turbo”).
+-api_base (str, optional) — The base URL of the provider API to call the model.
+-api_key (str, optional) — The API key to use for authentication.
+-custom_role_conversions (dict[str, str], optional) — Custom role conversion mapping to convert message roles in others. Useful for specific models that do not support specific message roles like “system”.
+-**kwargs — Additional keyword arguments to pass to the OpenAI API.
+
+
+
+
+
+
+
+
+
+
+
+
+OpenAIServerModel
+----------------------------------------------------------------------------
+This class lets you call any OpenAIServer compatible model. Here’s how you can set it (you can customise the api_base url to point to another server):
+Parameters
+
+-model_id (str) — The model identifier to use on the server (e.g. “gpt-3.5-turbo”).
+-api_base (str, optional) — The base URL of the OpenAI-compatible API server.
+-api_key (str, optional) — The API key to use for authentication.
+-organization (str, optional) — The organization to use for the API request.
+-project (str, optional) — The project to use for the API request.
+-client_kwargs (dict[str, Any], optional) — Additional keyword arguments to pass to the OpenAI client (like organization, project, max_retries etc.).
+-custom_role_conversions (dict[str, str], optional) — Custom role conversion mapping to convert message roles in others. Useful for specific models that do not support specific message roles like “system”.
+-**kwargs — Additional keyword arguments to pass to the OpenAI API.
+
+
+
+
+
+
+
+
+
+AzureOpenAIServerModel
+----------------------------------------------------------------------------
+AzureOpenAIServerModel allows you to connect to any Azure OpenAI deployment.
+class smolagents.AzureOpenAIServerModel
+
+Parameters
+
+-model_id (str) — The model deployment name to use when connecting (e.g. “gpt-4o-mini”).
+-azure_endpoint (str, optional) — The Azure endpoint, including the resource, e.g. https://example-resource.azure.openai.com/. If not provided, it will be inferred from the AZURE_OPENAI_ENDPOINT environment variable.
+-api_key (str, optional) — The API key to use for authentication. If not provided, it will be inferred from the AZURE_OPENAI_API_KEY environment variable.
+-api_version (str, optional) — The API version to use. If not provided, it will be inferred from the OPENAI_API_VERSION environment variable.
+-custom_role_conversions (dict[str, str], optional) — Custom role conversion mapping to convert message roles in others. Useful for specific models that do not support specific message roles like “system”.
+-**kwargs — Additional keyword arguments to pass to the Azure OpenAI API.

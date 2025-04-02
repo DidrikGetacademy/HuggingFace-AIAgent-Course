@@ -1,0 +1,133 @@
+Thought: Internal Reasoning and the Re-Act approach
+---------------------------------------------------------------------------------------------
+This Section:
+[
+We dive into the inner workings of an AI Agent- its ability to reason and plan.
+✅We'll explore how the agent leverages its internal dialogue to analyze information,
+✅break down complex problems into manageable steps, and decide what action to take next.
+✅Additionally we introduce the Re-Act approach, a prompting technique that encourages the model to think step by step before acting
+]
+
+📌Thoughts --->  represent the Agent's internal reasoning and planning processes to solve the ask 
+•This utilises the agent's Large Language Model (LLM) capacity to analyze information when presented in its prompt...
+think of it as the Agent's internal dialogue, where it considers the task at hand and strategizes its approach.
+The Agent's thoughts are responsible for accessing current observation and decide what the next action(s) should be.
+Through this process, the agent can break down complex problems into smaller, more managageable steps, reflect on past experiences, and continuosly adjust its plans based on new information
+
+
+
+[Deeper explanation]
+📌The Agent:
+The Agent is the overarching entity that plans, makes decisions, and directs the process for solving a task.
+You can view it as a kind of strategist or leader.
+It receives observations, 
+assesses the situation, 
+and determines which actions should be taken. The Agent's "thoughts" – or its internal dialogue and planning – is a concept used to describe how it breaks down complex tasks into smaller, manageable steps.
+
+📌The LLM-model (Large Language Model):
+This is the engine that generates text based on the vast amounts of data it has been trained on. 
+It has the ability to analyze and produce responses in natural language.
+When we refer to the "Agent's thoughts," we are often talking about how the Agent uses the LLM-model to simulate internal reasoning – a "chain-of-thought."
+This means that the Agent essentially delegates the computational and linguistic processing to the LLM-model.
+
+
+Here are some exsamples of common thoughts: 
+Type of Thought  |       Exsample    
+---------------------------------------------          
+Planning         | “I need to break this task into three steps: [1. gather data]  [2. analyze trends]  [3. generate report]”           
+Analysis         | “Based on the error message, the issue appears to be with the database connection parameters”
+Decision Making  | “Given the user’s budget constraints, I should recommend the mid-tier option”
+Problem Solving  | “To optimize this code, I should first profile it to identify bottlenecks”
+MemoryIntegration| “The user mentioned their preference for Python earlier, so I’ll provide examples in Python”
+Self-Reflection  | “My last approach didn’t work well, I should try a different strategy”
+Goal Setting     | “To complete this task, I need to first establish the acceptance criteria”
+Prioritization   | “The security vulnerability should be addressed before adding new features”
+
+📌Note: In the case of LLMs fine-tuned for function calling, the thought process is optional. in case you're not familiar with function-calling, there will be more details in the action section.
+
+
+
+
+The Re-Act Approach
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+A key method is the ReAct Approah, wich is the concatenation of "Reasoning" (Think) with "Acting" (Act).
+ReAct is a simple prompting technique that appends "let's think step by step" before letting the LLM decode the next tokens.
+
+indeed prompting the model to think "step by step" encourages the decoding process toward next tokens [that generate a plan] rather than a final solution, 
+since the model is encouraged to [decompose] the problem into sub-tasks.
+
+📌this allows the model to consider sub-steps in more detail, wich in general leads to less errors than trying to generate the final solution directly
+
+
+
+
+
+
+
+This image presents a comparison of different reasoning approaches used in answering a mathematical problem. The approaches include Few-shot, Few-shot-CoT (Chain of Thought), Zero-shot, and Zero-shot-CoT. Below is a breakdown of each approach and its effectiveness:
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+✅Few-shot (a):
+
+•The model is given an example of a similar problem before attempting the new question.
+
+•The response is incorrect because the model fails to break down the reasoning steps properly.
+
+•Example Problem: A juggler can juggle 16 balls. Half are golf balls, and half of the golf balls are blue. The model incorrectly answers "8" instead of "4."
+
+
+
+
+✅Few-shot-CoT (b):
+
+•The model is provided with an example that demonstrates step-by-step reasoning.
+
+•It correctly solves the problem by first determining that there are 8 golf balls and then finding that half of them are blue, leading to the correct answer of "4."
+
+•This method improves accuracy by encouraging structured reasoning.
+
+
+
+
+
+✅Zero-shot (c):
+
+•The model is given the question without prior examples or reasoning steps.
+
+•It provides an incorrect response due to the lack of structured reasoning.
+
+•The answer "8" is incorrect because the model does not break down the steps needed to reach the correct answer.
+
+
+
+
+✅Zero-shot-CoT (d) (Ours):
+
+•The model is instructed to "think step by step" before answering.
+
+•It correctly determines that there are 8 golf balls and that half of them are blue, leading to the correct answer of "4."
+
+•This approach demonstrates that prompting the model to explicitly reason through the problem improves accuracy without needing prior examples.
+
+
+NOTE ----> The (d) is an exsample of Re-Act approach where we prompt ["let's think step by step"]
+
+
+
+
+📌Key Takeaways:
+
+The Few-shot and Zero-shot methods struggle with complex reasoning.
+
+The Chain of Thought (CoT) approach significantly improves accuracy by encouraging step-by-step problem-solving.
+
+The Zero-shot-CoT method provides an effective solution without requiring prior examples, making it a powerful approach for reasoning tasks.
+
+This comparison highlights the importance of structured reasoning in AI models and the effectiveness of the CoT method in enhancing problem-solving accuracy.
+
+
+
+CHAIN-OF-THOUGHT technique:
+We have recently seen a lot of interest for reasoning strategies. This is what's behind models like Deepseek R1 or OpenAI's o1, which have been fine-tuned to "think before answering".
+These models have been trained to always include specific thinking sections (enclosed between <think> and </think> special tokens).
+ This is not just a prompting technique like ReAct, but a training method where the model learns to generate these sections after analyzing thousands of examples that show what we expect it to do.
+

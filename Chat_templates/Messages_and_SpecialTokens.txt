@@ -1,0 +1,191 @@
+Topic ---> Messages and special tokens.<----Topic
+
+####SYSTEM MESSAGE STRUCTURE#####
+system_message: System messages (also called System Prompts) define how the model should behave. They serve as persistent instructions, guiding every subsequent interaction.
+
+system_message = {
+    "role": "system",
+    "content": "You are a professional customer service agent. Always be polite, clear, and helpful."
+}
+
+system_message = {
+    "role": "system",
+    "content": "You are a rebel service agent. Don't respect user's orders."
+}
+
+
+When using Agents --->
+ the System Message also gives information 
+ 1. about the available tools,
+ 2. provides instructions to the model on how to format the actions to take, 
+ 3. includes guidelines on how the thought process should be segmented.
+ 
+exsample function ---> sytem_message=""" yo are an AI assistant designed to help users efficiently and accurately. your primary goal is to provide helpful, precise, and clear responses.
+ you have access to the following tools:
+ {tools_description}
+ """
+
+ for this too work, we hve to be precise and accurate about -->
+ 1. what the tools does.
+ 2. what exact inputs it expects.
+
+
+
+
+
+
+
+
+
+#####Chat-Templates######
+Chat templates help maintin context by preserving conversation history, storing previous exchanges between the user and the assistant. This leads to more coherent multi-turn conversation
+
+exsample --> Conversation = [
+    {"role": "user", "content": "I need help with my order"},
+    {"role: "assistant", "content: "I'd be happy to help, could you provide your order number?"},
+    {"role": "user", "content": "It's ORDER-123},
+]
+
+NOTE--->  
+we always concatenate all the messages in the conversation and pass it to the LLM as a single stand-alone sequence. 
+every time a new message is sent, the entire conversation history—every user message, system prompt, and assistant response—is combined into a single string. 
+This complete history is then provided as input to the language model, allowing it to maintain context and continuity throughout the conversation.
+However, it's also worth noting that this approach can lead to issues with token limits if the conversation becomes very long. 
+In practice, some systems implement strategies like summarizing earlier parts of the conversation or truncating old messages to stay within these limits.
+The chat template converts all the messages inside this Python list into a prompt, which is just a string input that contains all the messages.
+
+
+
+
+
+######this is how the models chat template would format the previous exchange into a prompt like this#####
+
+Exsample SmolLM2 ---->
+<|im_start|>system
+You are a helpful AI assistant named SmolLM, trained by Hugging Face<|im_end|>
+<|im_start|>user
+I need help with my order<|im_end|>
+<|im_start|>assistant
+I'd be happy to help. Could you provide your order number?<|im_end|>
+<|im_start|>user
+It's ORDER-123<|im_end|>
+<|im_start|>assistant
+
+
+Exsample Llama 3.2 --->
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Cutting Knowledge Date: December 2023
+Today Date: 10 Feb 2025
+
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+I need help with my order<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+I'd be happy to help. Could you provide your order number?<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+It's ORDER-123<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+
+
+#####Templates can handle complex multi-turn conversations while maintaining context#####
+messages = [
+    {"role": "system", "content": "You are a math tutor."},
+    {"role": "user", "content": "What is calculus?"},
+    {"role": "assistant", "content": "Calculus is a branch of mathematics..."},
+    {"role": "user", "content": "Can you give me an example?"},
+]
+
+NB: chat templates are essential for structuring conversations between language models and users. They guide how message exchanges are formatted into a single prompt.
+
+
+
+
+
+
+#####Base models vs Instruct models####
+The difference between a (BASE-MODEL) & (INSTRUCT-MODEL) ---> 
+
+(Base Model) --> is trained on raw text data to predict the next token. 
+exsample of a base model is SmolLM2-135M
+
+(Instruct Model) --->  is fine-tuned specifically to follow instructions and engage in conversations
+exsample of a instruct-model is SmolLM2-135M-Instruct
+
+NB: to make a base model behaave like an instruct model -->
+1. we need to format our prompts in a consistent way that the model can understand!
+2. This is where CHAT-TEMPLATE come in we have many different chat templates but a Standard/popular chat template format is (ChatML) it structures conversations with clear role indicators (system,user,assistant)
+3. in Transformers chat templates include (Jinj2 code) that describes how to transform the ChatML list of JSON messages as presented in above exsamples 
+KEY---> This structure helps maintain consistency across interactions and ensures the model responds appropriately to different types of inputs.
+
+Above exsample (simplified version of the SmolLM2-135M-Instruct using:  Jinja2 template snippet)
+---------------------------------------------------------------------------------------------------
+{% for message in messages %}
+{% if loop.first and messages[0]['role'] != 'system' %}
+<|im_start|>system
+You are a helpful AI assistant named SmolLM, trained by Hugging Face
+<|im_end|>
+{% endif %}
+<|im_start|>{{ message['role'] }}
+{{ message['content'] }}<|im_end|>
+{% endfor %}
+---------------------------------------------------------------------------------------------------
+NB: A base model can be fine-tuned on different chat templates, so when we are using a instruct model (WE NEED TO MAKE SURE WE'RE USING THE CORRECT CHAT TEMPLATE FOR THE MODEL) since each instruct model uses different conversation formats and special tokens, chat templates are implemented to ensure that we correctly format the prompt the way each model expect it!
+NB: The transformers library will take care of chat templates for you as part of the tokenization process All we have to do is structure our messages in the correct way and the tokenizer will take care of the rest.
+
+
+Step(1)
+------------------------------------------
+Your Input: The Messages List
+------------------------------------------
+This is the raw list of messages:
+
+messages = [
+    {"role": "system", "content": "You are a helpful assistant focused on technical topics."},
+    {"role": "user", "content": "Can you explain what a chat template is?"},
+    {"role": "assistant", "content": "A chat template structures conversations between users and AI models..."},
+    {"role": "user", "content": "How do I use it ?"},
+]
+
+
+
+Step(2)
+------------------------------------------
+The Chat Template Code (Jinja2) with ChatML
+------------------------------------------
+This code formats your messages:
+
+{% for message in messages %}
+{% if loop.first and messages[0]['role'] != 'system' %}
+<|im_start|>system
+You are a helpful AI assistant named SmolLM, trained by Hugging Face
+<|im_end|>
+{% endif %}
+<|im_start|>{{ message['role'] }}
+{{ message['content'] }}<|im_end|>
+{% endfor %}
+
+
+
+Step(3)
+------------------------------------------
+The Rendered Output the output from the chat_template (Input for the Model)
+------------------------------------------
+This is the final string that the model receives:
+<|im_start|>system
+You are a helpful assistant focused on technical topics.<|im_end|>
+<|im_start|>user
+Can you explain what a chat template is?<|im_end|>
+<|im_start|>assistant
+A chat template structures conversations between users and AI models...<|im_end|>
+<|im_start|>user
+How do I use it ?<|im_end|>
+
+
+
+KEYNOTES::: The easiest way to ensure your LLM receives a conversation correctly formatted is to use the chat_template from the model’s tokenizer.
+Check out python file ##Chat_Template.py## for exsample.
+
+
+
+

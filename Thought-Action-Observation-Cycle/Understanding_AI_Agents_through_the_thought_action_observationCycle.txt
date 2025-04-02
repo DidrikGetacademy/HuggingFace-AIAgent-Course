@@ -1,0 +1,148 @@
+Understanding AI Agents through the [Thought-Action-Observation Cycle]
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+The Core Components--->
+Agents work in a continuous cycle of:  thinking (thought) --> acting(Act) and observing(Observe)
+
+1. Thought: The LLM part of the Agent decides what the next step should be. 
+
+2. Action: The agent takes an action, by calling the tools with the associated arguments.
+
+3. Observation: The model reflects on the response from the tool
+
+
+
+
+
+
+
+
+The Thought-Action-Observation Cycle
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+The three components work together in a continious loop. to use an analogy from programming, the agent uses a (while loop): the loop continues until the objective of the agent has been fulfilled.
+
+
+LLM Thought Process Visualised
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Query --> Think ---> Action ---> Observation ---> Think/End  #Finish or another action needed?
+
+
+
+
+
+In many Agent frameworks, the rules and guidelines are embedded directly into the system prompt, ensuring that every cycle adheres to a defined logic.
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+system_message="""You are an AI assistant desgined to help users efficiently and accurately. Your
+primary goal is to provide helpful, precise, and clear responses.
+
+you have access to the following tools:
+Tool Name: calculator, description: multiply two integers., Arguments: a: int, b: int, Outputs: int
+
+You should think step by step in order to fulfill the objective with a reasoning devided in 
+Thought/Action/Observation that can repeat multiple times if needed.
+
+You should first reflect with `Thought: {your_thoughts}` on the current situation,
+then (if necessary ), call a tool with the proper JSON formatting `Action: {JSON_BLOB}` , or your print 
+your final answear tarting with the prefix `Final Answer:`
+"""
+
+
+
+📌we see here that in the System Message we defined: 
+✅.The Agent's behavior.
+✅The Tools our Agent has access to, as we described in the previous section.
+✅The Thought-Action-Observation Cycle, that we bake into the LLM instructions.
+
+
+
+Let's take a small example to understand the process before going deeper into each step of the process.
+
+Alfred, the weather Agent
+we created Alfred, the Weather Agent.
+a user asks Alfred: "What's the weather like in New York today?"
+Alfred's job is to answear this query using a weather API tool.
+
+Here's how the cycle unfolds:
+
+
+✅Thought
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Internal Reasoning: 
+Upon Receiving the query, Alfred's internal dialogue might be:
+
+"The user needs current weather information for New York. I have access to a tool that fetches weather data. First i need to call the weather API to get up-to-date details."
+
+this step shows the agent breaking the problem into steps: first, gathering the necessary data.
+
+
+
+
+
+✅Action
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Tool Usage: 
+based on its reasoning the fact that alfred knows about a get_weather tool, Alfred prepares a JSON-formatted command that call the weather API tool. for example, its first action could be
+Thought: I need to check the current weather for new york.
+{
+    "action": "get_weather",
+    "action_input": {
+        "location": "New York"
+    }
+}
+📌Here, the action clearly specifies wich tool to call (e.g.., get_weather) and what parameter to pass (the "location": "New York")
+
+
+
+
+
+
+
+✅Observation
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Feedback From the enviorment:
+After the tool call, Alfred receives an observation. This might be the raw weather data from the API such as:
+API output from action function ---> "Current weather in New York: partly cloudy, 15%°C, 60% humidty."
+
+This observation is then added to the prompt as additional context. it functions as real-world feedback, confirming weather the action succeeded and providing the needed details.
+
+
+
+
+
+
+✅Updated Thought
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Reflecting: 
+with the observation in hand, Alfred updates its internal reasoning:
+"Now that i have the weather data for new york, i can compile an answear for the user."
+
+
+
+
+✅Final Action
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Alfred then generates a final response formatted as we told it to:
+
+Thought: i have the weather data now. the current wether in new york is partly clodly with a temperature of 15° and 60& humidity
+
+This final action sends the answear back to the user, closing the loop(While loop)
+
+
+
+
+
+📌Summary of the exsample📌
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+•Agents iterate through a loop until the objective is fullfilled:
+⁃Alfred's process is cyclical. it starts with a thought, then acts by calling a tool, and finally observes the outcome.
+if the obervation had indicated an error or incomplete data, alfred could have re-entered the cycle to correct it's approach. 
+
+•Tool integration:
+⁃The ability to call a tool (like weather API) enables Alfred to go beyond static knowledge and retrieve real-time data, an essential aspect of many AI Agents. 
+
+•Dynamic Adaptation:
+⁃Each cycle allows the agent to incorporate fresh information (observation) into its reasoning (thought), ensuring that the final answear is well-informed and accurate!
+
+☻This exsample showcases the core concept behind the ReAct cycle (a concept we're going to develop in the next section):
+the interplay of thought, action and observation empowers AI agents to solve complex tasks iteravitely. 
+
+NB--> by (understanding) and (applying) these (principles) you can design agent that not only (reason) about their (tasks) but also (effectively utilize external tools) to complete them, all while (continuosly refining) their output based on (enviormental feedback). 
