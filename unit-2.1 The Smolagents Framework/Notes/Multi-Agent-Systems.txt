@@ -1,0 +1,30 @@
+📝Multi-agent systems enable specialized agents to collaborate on complex tasks
+
+📝In smolagents, different agents can be combined to generate Python code, call external tools, perform web searches, and more. By orchestrating these agents, we can create powerful workflows.
+
+
+📝A typical multi agent system setup might include:
+        -A Manager Agent for task delegation
+        -A Code Interpreter Agent for code execution
+        -A Web Search Agent for information retrieval
+
+
+📝illustrates a simple multi-agent architecture where a Manager Agent coordinates a Code Interpreter Tool and a Web Search Agent, which in turn utilizes tools like the DuckDuckGoSearchTool and VisitWebpageTool to gather relevant information.
+                 Manager-Agent
+               /              \
+              /                \
+Code-Interpreter-Agent          Web-Search-Agent
+                                \                \
+                                 \                \
+                          Web-Search-tool         Visit-Webpage-tool
+
+
+✅A multi-agent system consists of multiple specialized agents working together under the coordination of an Orchestrator Agent. 
+📌This approach enables complex workflows by distributing tasks among agents with distinct roles.
+
+
+📝For example, a Multi-Agent RAG system can integrate:
+➡A Web Agent for browsing the internet.
+➡A Retriever Agent for fetching information from knowledge bases.
+➡An Image Generation Agent for producing visuals.
+

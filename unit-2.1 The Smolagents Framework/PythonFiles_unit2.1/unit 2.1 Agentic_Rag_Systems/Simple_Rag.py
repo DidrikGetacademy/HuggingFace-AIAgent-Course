@@ -1,3 +1,4 @@
+#https://huggingface.co/learn/cookbook/rag_zephyr_langchain # not a part of course but valuable too learn about langchain 
 import locale 
 from getpass import getpass
 from langchain.document_loaders import GitHubIssuesLoader
@@ -14,5 +15,3 @@ docs = loader.load()
 splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=30)
 chunked_docs = splitter.split_documents(docs)
 
-
-https://huggingface.co/learn/cookbook/rag_zephyr_langchain

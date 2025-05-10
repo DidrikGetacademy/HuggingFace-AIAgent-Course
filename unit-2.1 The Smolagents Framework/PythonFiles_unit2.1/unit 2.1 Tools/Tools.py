@@ -56,13 +56,12 @@ image_generation_tool = load_tool(
      trust_remote_code=True
 )
 
+
 image_generation_tool_from_hub = Tool.from_space(
     "black-forest-labs/FLUX.1-schnell",
     name="image_generator",
     description="Generate an image from a prompt"
 )
-
-
 
 
 
