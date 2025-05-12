@@ -75,7 +75,7 @@ import gc
 gc.collect()
 torch.cuda.empty_cache()
 #Using local model since credit limit reached on HF so iwould need pro
-model = TransformersModel(model_id=r"c:\Users\didri\Desktop\Programmering\VideoEnchancer program\local_model\local_models_path\Qwen2.5-7B-Instruct-1M",max_new_tokens=5000,device_map="cuda", torch_dtype=torch.float16)
+model = TransformersModel(model_id=r"C:\Users\didri\Desktop\Programmering\AiCognetics Nettside\AI-Agent\Phi-3-mini-128k-instruct",max_new_tokens=5000,device_map="cuda", torch_dtype=torch.float16)
 
 task = """Find all Batman filming locations in the world, calculate the time to transfer via cargo plane to here (we're in Gotham, 40.7128° N, 74.0060° W), and return them to me as a pandas dataframe. Also give me some supercar factories with the same cargo plane transfer time."""
 agent = CodeAgent(

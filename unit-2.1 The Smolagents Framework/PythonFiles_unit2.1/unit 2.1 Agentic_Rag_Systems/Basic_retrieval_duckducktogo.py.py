@@ -1,4 +1,4 @@
-from smolagents import CodeAgent, DuckDuckGoSearchTool, HfApiModel
+from smolagents import CodeAgent, DuckDuckGoSearchTool, HfApiModel,TransformersModel
 
 
 search_tool = DuckDuckGoSearchTool()
