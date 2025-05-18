@@ -1,0 +1,35 @@
+######Vision Agents with smolagents######
+✅Empowering agents with visual capabilities is crucial for solving tasks that go beyond text processing✅
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+Many real-world challenges, such as web browsing or document understanding, require analyzing rich visual content.
+Fortunately, smolagents provides built-in support for vision-language models (VLMs), enabling agents to process and interpret images effectively.
+In this example, imagine Alfred, the butler at Wayne Manor, is tasked with verifying the identities of the guests attending the party. As you can imagine, 
+Alfred may not be familiar with everyone arriving. To help him, we can use an agent that verifies their identity by searching for visual information about their appearance using a VLM.
+
+This will allow Alfred to make informed decisions about who can enter. Let’s build this example!
+
+python file: Huggingface Agent Course\unit-2.1 The Smolagents Framework\PythonFiles_unit2.1\Vision Agents\Vision_agents_with_smolagents.py
+
+
+
+
+
+
+✅Providing Images with Dynamic Retrieval✅
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+📑smolagents are based on the MultiStepAgent class, which is an abstraction of the ReAct framework. This class operates in a structured cycle where various variables and knowledge are logged at different stages:
+-SystemPromptStep: Stores the system prompt.
+-TaskStep: Logs the user query and any provided input.
+-ActionStep: Captures logs from the agent’s actions and results.
+
+
+
+📑This structured approach (see img on link) allows agents to incorporate visual information dynamically and respond adaptively to evolving tasks. Below is the diagram we’ve already seen, 
+illustrating the dynamic workflow process and how different steps integrate within the agent lifecycle. When browsing, the agent can take screenshots and save them as observation_images in the ActionStep.
+https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/blog/smolagents-can-see/diagram_adding_vlms_smolagents.png
+
+
+
+
+
+📑This will allow us to build an agent that explores the web, searching for details about a potential guest and retrieving verification information. Let’s install the tools needed:
