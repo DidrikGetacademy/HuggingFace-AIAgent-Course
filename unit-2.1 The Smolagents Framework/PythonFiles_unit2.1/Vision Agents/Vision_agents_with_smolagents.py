@@ -1,8 +1,16 @@
 from PIL import Image
 import requests
 from io import BytesIO
-from smolagents import CodeAgent,TransformersModel, OpenAIServerModel
+from smolagents import CodeAgent, OpenAIServerModel,TransformersModel,AutoModelForImageTextToText
 import torch
+from dotenv import load_dotenv
+import os
+os.environ["TRANSFORMERS_NO_FLASH_ATTENTION"] = "1"
+import os
+print("FlashAttention disabled:", os.getenv("TRANSFORMERS_NO_FLASH_ATTENTION"))
+
+load_dotenv()
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 def Alfred_catching_joker_image_reading():
     image_urls = [
         "https://upload.wikimedia.org/wikipedia/commons/e/e8/The_Joker_at_Wax_Museum_Plus.jpg",
@@ -19,7 +27,12 @@ def Alfred_catching_joker_image_reading():
         image = Image.open(BytesIO(response.content)).convert("RGB")
         images.append(image)
 
-    model = OpenAIServerModel(model_id="gpt-4o")
+    model = AutoModelForImageTextToText(
+        model_id=r"c:\Users\didri\Desktop\LLM-models\microsoft\microsoft\Phi-4-multimodal-instruct",
+        device_map="auto",
+        torch_dtype="auto",
+        trust_remote_code=True
+    )
 
 
 
@@ -27,7 +40,7 @@ def Alfred_catching_joker_image_reading():
         tools=[],
         model=model,
         max_steps=20,
-        verbosity_level=2
+        verbosity_level=4
     )
 
     response = agent.run(
