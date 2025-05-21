@@ -33,3 +33,12 @@ https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/bl
 
 
 📑This will allow us to build an agent that explores the web, searching for details about a potential guest and retrieving verification information. Let’s install the tools needed:
+- We provide code for Agent to execute tool to navigate the web as a human
+
+-search_item_ctl_f   #to search for specific words
+-go_back             # so the agent can navigate the internet.
+- close_popups       #to close any popups that may appear
+-save_screenshot     #so the VLM model can analyze the screenshots and proccess the images dynamically while navigating the web.
+
+
+
