@@ -1,0 +1,47 @@
+🟢What are components in LlamaIndex?🟢
+---------------------------------------------------------------------
+🔑our agent needs to understand our requests and prepare, 
+find and use relevant information to help complete tasks. This is where LlamaIndex’s components come in.
+
+🔑While LlamaIndex has many components, 
+🔑we’ll focus specifically on the QueryEngine component.  Because it can be used as a Retrieval-Augmented Generation (RAG) tool for an agent.
+
+
+
+
+
+🟢RAG🟢
+So, what is RAG? LLMs are trained on enormous bodies of data to learn general knowledge. 
+However, they may not be trained on relevant and up-to-date data.
+RAG solves this problem by finding and retrieving relevant information from your data and giving that to the LLM.
+
+Now, think about how Alfred works:
+-------------------------------------------------------------
+1.You ask Alfred to help plan a dinner party
+2.Alfred needs to check your calendar, dietary preferences, and past successful menus
+3.The QueryEngine helps Alfred find this information and use it to plan the dinner party
+
+🔑This makes the QueryEngine a key component for building agentic RAG workflows in LlamaIndex. 
+Just as Alfred needs to search through your household information to be helpful,
+any agent needs a way to find and understand relevant data. The QueryEngine provides exactly this capability.
+
+
+
+
+
+🟢Creating a RAG pipeline using components🟢
+
+
+There are five key stages within RAG, which in turn will be a part of most larger applications you build. These are:
+
+1.Loading: this refers to getting your data from where it lives — whether it’s text files, PDFs, another website, a database, or an API — into your workflow. LlamaHub provides hundreds of integrations to choose from.
+
+2.Indexing: this means creating a data structure that allows for querying the data. For LLMs, this nearly always means creating vector embeddings. Which are numerical representations of the meaning of the data. Indexing can also refer to numerous other metadata strategies to make it easy to accurately find contextually relevant data based on properties.
+
+3.Storing: once your data is indexed you will want to store your index, as well as other metadata, to avoid having to re-index it.
+
+4.Querying: for any given indexing strategy there are many ways you can utilize LLMs and LlamaIndex data structures to query, including sub-queries, multi-step queries and hybrid strategies.
+
+5.Evaluation: a critical step in any flow is checking how effective it is relative to other strategies, or when you make changes. Evaluation provides objective measures of how accurate, faithful and fast your responses to queries are.
+
+🔑----> components.py
