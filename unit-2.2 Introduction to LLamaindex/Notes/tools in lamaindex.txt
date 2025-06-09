@@ -1,0 +1,7 @@
+🟢There are four main types of tools in LlamaIndex:
+🔑1.  FunctionTool: convert any python function into a tool that an agent can use. it automatically figures out how the function works.
+🔑2. QueryEngineTool: A tool that lets agents use query engines. Since agents are built on query engines, they can also use other agents as tools.
+🔑3. Toolspecs: Sets of tools created by the community, which often include tools for specific services like Gmail.
+🔑4. Utility Tools: Special tools that help handle large amounts of data from other tools.
+
+see file: llama_index_tools folder
