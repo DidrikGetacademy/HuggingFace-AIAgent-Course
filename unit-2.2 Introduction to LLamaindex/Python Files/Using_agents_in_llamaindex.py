@@ -8,35 +8,43 @@
 from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
 from llama_index.core.agent.workflow import AgentWorkflow
 from llama_index.core.tools import FunctionTool
+from llama_index.core.workflow import Context
+import asyncio
 
 #define sample Tool -- type annotations, function names, and docstrings, are all included in parsed schemas!
 def multiply(a: int, b: int) -> int:
     """Multiplies two integers and returns the resulting integer"""
     return a * b
 
-
-#initialize llm
-llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
-
-#initialize agent
-agent = AgentWorkflow.from_tools_or_functions(
-    [FunctionTool.from_defaults(multiply)],
-    llm=llm
-)
-
-
 # Agents are stateless by default, add remembering past interactions is opt-in using a Context object This might be useful if you want to use an agent that needs to remember previous interactions,
 # like a chatbot that maintains context across multiple messages or a task manager that needs to track progress over time.
 
 # stateless
-response =  await agent.run("what is 2 times 2?")
+
+async def main():
+    llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
+    agent = AgentWorkflow.from_tools_or_functions(
+        [FunctionTool.from_defaults(multiply)],
+        llm=llm
+    )
+    # stateless
+    response = await agent.run("what is 2 times 2?")
+    print(f"Response: {response}")
+
+    # remembering state
+    from llama_index.core.workflow import Context
+
+    ctx = Context(agent)
+    
+
+    response2 = await agent.run("My name is Bob.", ctx=ctx)
+    print(f"response: {response2} ")
+    response3 = await agent.run("what was my name again?", ctx=ctx)
+    print(f"response: {response3} ")
 
 
-
-#remembering state
-from llama_index.core.workflow import Context
-
-ctx = Context(agent)
-
-response = await agent.run("My name is Bob.", ctx=ctx)
-response = await agent.run("what was my name again?", ctx=ctx)
+asyncio.run(main())
+#output: 
+# Response: 2 times 2 is 4.
+# response: Hello Bob, it seems you asked for a multiplication, and 2 multiplied by 3 is 6. How can I assist you further? 
+# response: Your name is Bob. 

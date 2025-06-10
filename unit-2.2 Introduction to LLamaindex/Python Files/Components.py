@@ -82,7 +82,7 @@ def Storing_and_indexing_documents():
     db = chromadb.PersistentClient(path="./alfred_chroma_db")
     chroma_collection = db.get_or_create_collection("alfred")
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
-
+ 
     pipeline = IngestionPipeline(
         transformations=[
             SentenceSplitter(chunk_size=256, chunk_overlap=20),
@@ -135,9 +135,16 @@ def Evaluation_and_observability():
     #🔑FaithfulnessEvaluator: Evaluates the faithfulness of the answer by checking if the answer is supported by the context.
     #🔑AnswerRelevancyEvaluator: Evaluate the relevance of the answer by checking if the answer is relevant to the question.
     #🔑CorrectnessEvaluator: Evaluate the correctness of the answer by checking if the answer is correct.
-
-    query_engine = # from the previous section
-    llm = # from the previous section
+    db = chromadb.PersistentClient(path="./alfred_chroma_db")
+    chroma_collection = db.get_or_create_collection("alfred")
+    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+    embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+    index = VectorStoreIndex.from_vector_store(vector_store,embed_model=embed_model)
+    query_engine = index.as_query_engine(
+        llm=llm,
+        response_mode="tree_summarize",
+    )
+    llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
 
     # query index
     evaluator = FaithfulnessEvaluator(llm=llm)
@@ -217,7 +224,7 @@ async def full_exsample_from_local_path():
 
 
 if __name__ == "__main__":
-   # asyncio.run(main()) splits the documents, creates vectors of them, nodes is the  prepeared documents bits ready to be searched in
+   #asyncio.run(create_IngestionPipeline()) #splits the documents, creates vectors of them, nodes is the  prepeared documents bits ready to be searched in
    #Storing_and_indexing_documents() #All information is automatically persisted within the ChromaVectorStore object and the passed directory path.
    #asyncio.run(full_exsample_from_local_path())
 
