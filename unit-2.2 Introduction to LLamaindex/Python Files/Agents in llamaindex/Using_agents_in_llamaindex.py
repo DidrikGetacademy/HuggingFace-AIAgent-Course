@@ -19,8 +19,9 @@ def multiply(a: int, b: int) -> int:
 # Agents are stateless by default, add remembering past interactions is opt-in using a Context object This might be useful if you want to use an agent that needs to remember previous interactions,
 # like a chatbot that maintains context across multiple messages or a task manager that needs to track progress over time.
 
-# stateless
 
+#you’ll notice that agents in LlamaIndex are async because they use Python’s await operator.
+#more about async: https://docs.llamaindex.ai/en/stable/getting_started/async_python/
 async def main():
     llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
     agent = AgentWorkflow.from_tools_or_functions(
@@ -31,12 +32,11 @@ async def main():
     response = await agent.run("what is 2 times 2?")
     print(f"Response: {response}")
 
+
+
     # remembering state
     from llama_index.core.workflow import Context
-
     ctx = Context(agent)
-    
-
     response2 = await agent.run("My name is Bob.", ctx=ctx)
     print(f"response: {response2} ")
     response3 = await agent.run("what was my name again?", ctx=ctx)
@@ -48,4 +48,5 @@ asyncio.run(main())
 # Response: 2 times 2 is 4.
 # response: Hello Bob, it seems you asked for a multiplication, and 2 multiplied by 3 is 6. How can I assist you further? 
 # response: Your name is Bob. 
-#HAD TO CHANGE PYTHON VERSION TO 3.11 because python 3.10 will give asynchio problems with llamaindex 
+# HAD TO CHANGE PYTHON VERSION TO 3.11 because python 3.10 will give asynchio problems with llamaindex 
+#
