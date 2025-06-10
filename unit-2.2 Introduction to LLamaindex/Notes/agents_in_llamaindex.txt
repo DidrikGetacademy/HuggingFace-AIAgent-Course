@@ -1,0 +1,11 @@
+🟢REMEMBER: An Agent is a system that leverages an AI model to interact with its environment to achieve a user-defined objective. It combines reasoning, planning, and action execution (often via external tools) to fulfil tasks.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+🟢LlamaIndex supports three main types of reasoning agents:
+🔑1. Function calling agents - These work with ai models that can call specific functions.
+
+🔑2. ReAct Agents - These can work with any AI that does chat or text endpoint and deal with complex reasoning tasks.
+
+🔑3.  Advanced Custom Agents -  These use more complex methods to deal with more complex tasks and workflows.
+
+
+----> using_agents_in_llamaindex.py
