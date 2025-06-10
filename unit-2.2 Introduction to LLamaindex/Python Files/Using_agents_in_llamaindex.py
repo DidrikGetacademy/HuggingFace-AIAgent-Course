@@ -48,3 +48,4 @@ asyncio.run(main())
 # Response: 2 times 2 is 4.
 # response: Hello Bob, it seems you asked for a multiplication, and 2 multiplied by 3 is 6. How can I assist you further? 
 # response: Your name is Bob. 
+#HAD TO CHANGE PYTHON VERSION TO 3.11 because python 3.10 will give asynchio problems with llamaindex 
