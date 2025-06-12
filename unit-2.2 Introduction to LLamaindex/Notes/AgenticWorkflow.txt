@@ -1,0 +1,22 @@
+Creating agentic workflows in LlamaIndex
+-----------------------------------------------
+
+A workflow in LlamaIndex provides a structured way to organize your code into sequential and manageable steps.
+Such a workflow is created by defining Steps which are triggered by Events, and themselves emit Events to trigger further steps. 
+------------------------------------------------------------------------------------------------------------------------------------------
+Let’s take a look at Alfred showing a LlamaIndex workflow for a RAG task.
+
+
+Workflows offer several key benefits:
+
+🔑Clear organization of code into discrete steps
+
+🔑Event-driven architecture for flexible control flow
+
+🔑Type-safe communication between steps
+
+🔑Built-in state management
+
+🔑Support for both simple and complex agent interactions
+
+🟢As you might have guessed, workflows strike a great balance between the autonomy of agents while maintaining control over the overall workflow.
