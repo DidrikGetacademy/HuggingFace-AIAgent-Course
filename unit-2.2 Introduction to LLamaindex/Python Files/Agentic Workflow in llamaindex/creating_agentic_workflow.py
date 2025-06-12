@@ -102,12 +102,27 @@ async def  run_loop_and_branches():
 
 
 
+#There is one last cool trick that we will cover in the course, which is the ability to add state to the workflow.
 #----------------#
 #State Management#
 #----------------#
-#There is one last cool trick that we will cover in the course, which is the ability to add state to the workflow.
- #- State Management
 #State management is useful when you want to keep track of the state of the workflow, so that every step has access to the same state. We can do this by using the Context type hint on top of a parameter in the step function.
+from llama_index.core.workflow import Context, StartEvent, StopEvent
+
+@step
+async def query(self, ctx: Context, ev: StartEvent) -> StopEvent:
+    #Store the query in the context
+    await ctx.set("query", "What is the capital of france?")
+
+    #exsample send question to a function that search for the answer...
+    val = await web_search_query(query)
+
+    #retrieve query from the contex
+    query = await ctx.get("query")
+
+    return StopEvent(result=val)
+
+
 
 if __name__ == "__main__":
    #asyncio.run(run_workflow())
