@@ -6,3 +6,5 @@ Now that we understand the building blocks, let’s put them into practice by bu
 3. Draft a preliminary response for legitimate emails
 4. Send information to Mr. Wayne when legitimate (printing only)
 This example demonstrates how to structure a workflow with LangGraph that involves LLM-based decision-making. While this can’t be considered an Agent as no tool is involved, this section focuses more on learning the LangGraph framework than Agents.
+
+Python file ---->  Building_your_first_langGraph.py

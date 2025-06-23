@@ -1,0 +1,17 @@
+Document Analysis Graph
+Alfred at your service. As Mr. Wayne’s trusted butler, I’ve taken the liberty of documenting how I assist Mr Wayne with his various documentary needs. 
+While he’s out attending to his… nighttime activities, I ensure all his paperwork, training schedules, and nutritional plans are properly analyzed and organized.
+
+Before leaving, he left a note with his week’s training program. I then took the responsibility to come up with a menu for tomorrow’s meals.
+
+For future such events, let’s create a document analysis system using LangGraph to serve Mr. Wayne’s needs. This system can:
+
+1.Process images document
+2.Extract text using vision models (Vision Language Model)
+3.Perform calculations when needed (to demonstrate normal tools)
+4.Analyze content and provide concise summaries
+5.Execute specific instructions related to documents
+
+The Butler’s Workflow 
+-------------------------------
+python file: Building_Document_analysis_graph.py

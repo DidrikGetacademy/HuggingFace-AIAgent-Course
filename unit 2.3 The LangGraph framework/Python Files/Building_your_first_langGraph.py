@@ -388,7 +388,7 @@ spam_result = compiled_graph.invoke({
 from langfuse.langchain import CallbackHandler
 
 #Initialize Langfuse CallbackHandler for LangGraph/Langchain (tracing)
-langfuse_handler = CallbackHandler()
+langfuse_handler = CallbackHandler() #
 
 #Process legitimate Email
 legitimate_email = compiled_graph.invoke(
@@ -400,7 +400,7 @@ legitimate_email = compiled_graph.invoke(
         "draft_response": None,
         "messages": []
         },
-    config={"callbacks": [langfuse_handler]}
+    config={"callbacks": [langfuse_handler]} # You can find the trace on the https://cloud.langfuse.com/project
 )
 
 #💡Alfred is now connected 🔌! The runs from LangGraph are being logged in Langfuse, giving him full visibility into the agent’s behavior. With this setup, he’s ready to revisit previous runs and refine his Mail Sorting Agent even further.
