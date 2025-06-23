@@ -2,7 +2,27 @@ import os
 from typing import TypedDict, List, Dict, Any, Optional
 from langgraph.graph import StateGraph, START, END
 from langchain_openai import ChatOpenAI
+from langchain_community.chat_models import ChatLlamaCpp #pip install -U langchain-community
+from langchain_community.llms import CTransformers
+
 from langchain_core.messages import HumanMessage
+# First, we pip install Langfuse:
+# open terminal and install libarry::: ->  %pip install -q langfuse
+# Second, we pip install Langchain (LangChain is required because we use LangFuse):
+# Next, we add the Langfuse API keys and host address as environment variables. You can get your Langfuse credentials by signing up for Langfuse Cloud: [https://cloud.langfuse.com/] or self-host Langfuse: [https://langfuse.com/self-hosting]
+import os
+from dotenv import load_dotenv
+load_dotenv()
+## Get keys for your project from the project settings page: https://cloud.langfuse.com
+LANGFUSE_PUBLIC_KEY = os.environ["LANGFUSE_PUBLIC_KEY"]
+LANGFUSE_SECRET_KEY = os.environ["LANGFUSE_SECRET_KEY"]
+LANGFUSE_HOST = os.environ["LANGFUSE_HOST"]
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+
+
+
+
+
 #-----------------------#
 #step 1. Define our state
 #-----------------------#
@@ -46,7 +66,16 @@ class EmailState(TypedDict):
 
 
 # Initialize our LLM
-model = ChatOpenAI(Temperature=0)
+
+#OPENAI with (paid feature)
+  #model = ChatOpenAI(temperature=0)
+
+#Local models with (langchain_community)
+ #model = ChatLlamaCpp( model_path="", temperature=0) #ONLY gguf files 
+
+#Local models with (ctransformers)
+#model = CTransformers( model=r"", temperature=0, max_new_tokens=512, top_p=0.7, repeat_penalty=1.1)
+
 
 def read_email(state: EmailState):
     """Alfred reads and logs the incoming email"""
@@ -183,14 +212,179 @@ def notify_mr_hugg(state: EmailState):
 
 
 
-#------------------------#
+#--------------------------------#
 #Step 3: Define Our Routing Logic
-#------------------------#
+#---------------------------------#
 #We need a function to determine which path to take after classification:
- 
-
-
-
+def route_email(state: EmailState) -> str:
+    """Determine the next step based on spam classification"""
+    if state["is_spam"]:
+        return "spam"
+    else:
+        return "legitimate"
 
 
 #💡 Note: This routing function is called by LangGraph to determine which edge to follow after the classification node. The return value must match one of the keys in our conditional edges mapping.
+
+
+
+
+
+
+#---------------------------------------------#
+#Step 4: Create the StateGraph and Define Edges
+#----------------------------------------------#
+#Now we connect everything together 
+
+#Create the graph 
+email_graph = StateGraph(EmailState)
+
+
+#add nodes
+email_graph.add_node("read_email", read_email)
+email_graph.add_node("classify_email",classify_email)
+email_graph.add_node("handle_spam",handle_spam)
+email_graph.add_node("draft_response",draft_response)
+email_graph.add_node("notify_mr_hugg",notify_mr_hugg)
+
+#start the edges
+email_graph.add_edge(START, "read_email")
+
+#Add edges - defining the flow
+email_graph.add_edge("read_email", "classify_email")
+
+#Add conditional branching from classify_email
+email_graph.add_conditional_edges(
+    "classify_email",
+    route_email,
+    {
+        "spam": "handle_spam",
+        "legitimate": "draft_response"
+    }
+)
+
+#add the final edges
+
+#proccess after spam-handling:
+email_graph.add_edge("handle_spam", END)
+#After draft response written, show Mr. Hugg:
+email_graph.add_edge("draft_response", "notify_mr_hugg")
+email_graph.add_edge("notify_mr_hugg", END)
+
+#Compile the graph, compile for a runable program
+compiled_graph = email_graph.compile()
+
+#-----------------------------------------------------------------------------------------------------------------------------#
+#💡Notice how we use the special END node provided by langGraph, this indicates terminal states where the workflow completes.
+
+
+
+
+#---------------------------#
+#Step 5: Run the Application
+#---------------------------#
+#Let’s test our graph with a legitimate email and a spam email:
+
+
+#Exsample legitimate email
+legitimate_email = {
+    "sender": "john.smith@exsample.com",
+    "subject": "Question about your services",
+    "body": "Dear Mr. Hugg, i was referred to you by a colleague and i'm interested in learning more  about your consulting services. Could we schedule a call next week? Best regards, John Smith" 
+}
+
+
+#Exsample spam email
+spam_email = {
+    "sender": "Winner@lottery-int1.com",
+    "subject": "YOU HAVE WON $5,000,000!!!",
+    "body":  "CONGRATULATIONS! You have been selected as the winner of our international lottery! To claim your $5,000,000 prize, please send us your bank details and a processing fee of $100."
+}
+
+
+
+# Process the legitimate email
+print("\nProcessing legitimate email...")
+legitimate_result = compiled_graph.invoke({
+    "email": legitimate_email,
+    "is_spam": None,
+    "spam_reason": None,
+    "email_category": None,
+    "email_draft": None,
+    "messages": []
+})
+
+
+# Process the spam email
+print("\nProcessing spam email...")
+spam_result = compiled_graph.invoke({
+    "email": spam_email,
+    "is_spam": None,
+    "spam_reason": None,
+    "email_category": None,
+    "email_draft": None,
+    "messages": []
+})
+
+
+
+
+#------------------------------------------------------------#
+#Step 6: Inspecting Our Mail Sorting Agent with Langfuse 📡
+#------------------------------------------------------------#
+# As Alfred fine-tunes the Mail Sorting Agent, he’s growing weary of debugging its runs. 
+# Agents, by nature, are unpredictable and difficult to inspect. But since he aims to build the ultimate Spam Detection Agent and deploy it in production,he needs robust traceability for future monitoring and analysis.
+
+# To do this, Alfred can use an observability tool such as Langfuse to trace and monitor the agent.
+
+
+
+#Then, we configure the Langfuse callback_handler and instrument the agent by adding the langfuse_callback to the invocation of the graph: config={"callbacks": [langfuse_handler]}.
+
+
+# langfuse v3.x  version is 3.0.3
+from langfuse.langchain import CallbackHandler
+
+#Initialize Langfuse CallbackHandler for LangGraph/Langchain (tracing)
+langfuse_handler = CallbackHandler()
+
+#Process legitimate Email
+legitimate_email = compiled_graph.invoke(
+    input={
+        "email": legitimate_email,
+        "is_spam": None,
+        "spam_reason": None,
+        "email_category": None,
+        "draft_response": None,
+        "messages": []
+        },
+    config={"callbacks": [langfuse_handler]}
+)
+
+#💡Alfred is now connected 🔌! The runs from LangGraph are being logged in Langfuse, giving him full visibility into the agent’s behavior. With this setup, he’s ready to revisit previous runs and refine his Mail Sorting Agent even further.
+
+#Visualizing Our Graph
+#LangGraph allows us to visualize our workflow to better understand and debug its structure:
+img_bytes = compiled_graph.get_graph().draw_mermaid_png()
+print(f"Image bytes length: {len(img_bytes)}")
+with open("Alfreds_email_processing_system.png", "wb") as f:
+    f.write(img_bytes) #This produces a visual representation showing how our nodes are connected and the conditional paths that can be taken.
+
+
+
+
+
+#✅ What We’ve Built
+# We’ve created a complete email processing workflow that:
+
+# Takes an incoming email
+# Uses an LLM to classify it as spam or legitimate
+# Handles spam by discarding it
+# For legitimate emails, drafts a response and notifies Mr. Hugg
+# This demonstrates the power of LangGraph to orchestrate complex workflows with LLMs while maintaining a clear, structured flow.
+
+# Key Takeaways
+# State Management: We defined comprehensive state to track all aspects of email processing
+# Node Implementation: We created functional nodes that interact with an LLM
+# Conditional Routing: We implemented branching logic based on email classification
+# Terminal States: We used the END node to mark completion points in our workflow
