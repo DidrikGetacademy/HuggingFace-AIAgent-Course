@@ -1,0 +1,7 @@
+Building Blocks of LangGraph
+-------------------------------------
+🔑To build applications with LangGraph, you need to understand its core components. Let’s explore the fundamental building blocks that make up a LangGraph application.
+    NOTE--> An application in LangGraph starts from an entrypoint, and depending on the execution, the flow may go to one function or another until it reaches the END.
+
+
+python file -----> Building_blocks_langGraph.py

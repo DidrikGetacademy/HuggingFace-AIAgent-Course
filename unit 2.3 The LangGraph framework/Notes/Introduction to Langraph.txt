@@ -1,0 +1,19 @@
+Welcome to this next part of our journey, where you’ll learn how to build applications using the LangGraph framework designed to help you structure and orchestrate complex LLM workflows.
+
+LangGraph is a framework that allows you to build production-ready applications by giving you control tools over the flow of your agent.
+
+Module Overview
+In this unit, you’ll discover:
+
+1️⃣ What is LangGraph, and when to use it?
+2️⃣ Building Blocks of LangGraph
+3️⃣ Alfred, the mail sorting butler
+4️⃣ Alfred, the document Analyst agent
+5️⃣ Quiz
+The examples in this section require access to a powerful LLM/VLM model. We ran them using the GPT-4o API because it has the best compatibility with langGraph.
+By the end of this unit, you’ll be equipped to build robust, organized and production ready applications !
+
+That being said, this section is an introduction to langGraph and more advances topics can be discovered in the free langChain academy course : Introduction to LangGraph
+
+Let’s get started!
+
