@@ -1,23 +1,74 @@
 import os
 from typing import TypedDict, List, Dict, Any, Optional
 from langgraph.graph import StateGraph, START, END
-from langchain_openai import ChatOpenAI
-from langchain_community.chat_models import ChatLlamaCpp #pip install -U langchain-community
-from langchain_community.llms import CTransformers
-
 from langchain_core.messages import HumanMessage
+
+
 # First, we pip install Langfuse:
-# open terminal and install libarry::: ->  %pip install -q langfuse
+# open terminal and install libary::: ->  %pip install -q langfuse
 # Second, we pip install Langchain (LangChain is required because we use LangFuse):
+
+
+#---------------------------------------------#
+#Loading variable/keys for langfuse (TRACING)
+#---------------------------------------------#
 # Next, we add the Langfuse API keys and host address as environment variables. You can get your Langfuse credentials by signing up for Langfuse Cloud: [https://cloud.langfuse.com/] or self-host Langfuse: [https://langfuse.com/self-hosting]
 import os
 from dotenv import load_dotenv
 load_dotenv()
 ## Get keys for your project from the project settings page: https://cloud.langfuse.com
-LANGFUSE_PUBLIC_KEY = os.environ["LANGFUSE_PUBLIC_KEY"]
-LANGFUSE_SECRET_KEY = os.environ["LANGFUSE_SECRET_KEY"]
-LANGFUSE_HOST = os.environ["LANGFUSE_HOST"]
-OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+from langfuse import Langfuse
+langfuse = Langfuse(
+  secret_key=os.environ["LANGFUSE_SECRET_KEY"],
+  public_key=os.environ["LANGFUSE_PUBLIC_KEY"],
+  host=os.environ.get("LANGFUSE_HOST", "https://cloud.langfuse.com")
+)
+#----------------------------------------------------------------------------------------------------------------------------#
+
+
+#------------------------------------------#
+#Initialize the  LLM (model) to use:
+#------------------------------------------#
+
+from langchain_openai import ChatOpenAI
+#----------------------------------------------------------------------------------------------------------------------------#
+# OpenAI LLM (requires API key and is a paid service)
+# Example:
+# model = ChatOpenAI(temperature=0)
+
+
+
+# Local models with langchain-community (requires installing langchain-community)
+from langchain_community.chat_models import ChatLlamaCpp
+#----------------------------------------------------------------------------------------------------------------------------#
+# ChatLlamaCpp runs LLaMA models locally via llama.cpp backend
+# Requires models in .gguf format only
+# Example:
+# model = ChatLlamaCpp(model_path="path/to/model.gguf", temperature=0)
+
+
+
+from langchain_community.llms.ctransformers import CTransformers
+#----------------------------------------------------------------------------------------------------------------------------#
+
+# CTransformers is a Python binding for the ctransformers C/C++ backend
+file_path = r"c:\Users\didri\Desktop\LLM-models\LLM-Models\GGUF-models\Langchain-llama-2-7b_langchain-chat-GGUF\llama-2-7b-langchain-chat-Q5_K_M.gguf"
+model = CTransformers(
+        model=r"c:\Users\didri\Desktop\LLM-models\LLM-Models\GGUF-models\Llama_2_13B_chat_GGUF\llama-2-13b-chat.Q4_K_S.gguf",
+        model_type="llama",
+        temperature=0,
+        max_new_tokens=512,
+        top_p=0.7,
+        repeat_penalty=1.1
+    )
+
+print(f"Model path: {file_path}")
+print(f"File exists: {os.path.exists(file_path)}")
+print(f"File size (MB): {os.path.getsize(file_path) / (1024*1024):.2f}")
+#----------------------------------------------------------------------------------------------------------------------------#
+
+
+
 
 
 
@@ -65,17 +116,6 @@ class EmailState(TypedDict):
 #Now, let’s create the processing functions that will form our nodes:
 
 
-# Initialize our LLM
-
-#OPENAI with (paid feature)
-  #model = ChatOpenAI(temperature=0)
-
-#Local models with (langchain_community)
- #model = ChatLlamaCpp( model_path="", temperature=0) #ONLY gguf files 
-
-#Local models with (ctransformers)
-#model = CTransformers( model=r"", temperature=0, max_new_tokens=512, top_p=0.7, repeat_penalty=1.1)
-
 
 def read_email(state: EmailState):
     """Alfred reads and logs the incoming email"""
@@ -109,7 +149,9 @@ def classify_email(state: EmailState):
     messages = [HumanMessage(content=prompt)]
     response = model.invoke(messages)
 
-    response_text = response.content.lower()
+    #response_text = response.content.lower() --> if using OPENAI model that  has both .role and .content attributes
+    response_text = response.lower()
+
     is_spam = "spam" in response_text and "not spam" not in response_text
     
     
@@ -132,7 +174,7 @@ def classify_email(state: EmailState):
     # Update messages for tracking
     new_messages = state.get("messages", []) + [
         {"role": "user", "content": prompt},
-        {"role": "assistant", "content": response.content}
+        {"role": "assistant", "content": response}
     ]
 
     #Return state updates 
@@ -180,12 +222,12 @@ def draft_response(state: EmailState):
     #Update messages for tracking
     new_messages = state.get("messages", []) + [
         {"role": "user", "content": prompt},
-        {"role": "assistant", "content": response.content}
+        {"role": "assistant", "content":  response.content if hasattr(response, "content") else response}
     ]
 
     #Return state updates
     return {
-        "email_draft": response.content,
+        "email_draft":  response.content if hasattr(response, "content") else response,
         "messages": new_messages
     }
 
@@ -363,6 +405,9 @@ legitimate_email = compiled_graph.invoke(
 
 #💡Alfred is now connected 🔌! The runs from LangGraph are being logged in Langfuse, giving him full visibility into the agent’s behavior. With this setup, he’s ready to revisit previous runs and refine his Mail Sorting Agent even further.
 
+
+
+
 #Visualizing Our Graph
 #LangGraph allows us to visualize our workflow to better understand and debug its structure:
 img_bytes = compiled_graph.get_graph().draw_mermaid_png()
@@ -388,3 +433,60 @@ with open("Alfreds_email_processing_system.png", "wb") as f:
 # Node Implementation: We created functional nodes that interact with an LLM
 # Conditional Routing: We implemented branching logic based on email classification
 # Terminal States: We used the END node to mark completion points in our workflow
+
+
+
+#THE SYSTEM FLOW OUTPUT IN TERMINAL:
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+# PS C:\Users\didri\Desktop\AI-Agents\AI-Agent\Huggingface Agent Course> & C:/Users/didri/AppData/Local/Programs/Python/Python311/python.exe "c:/Users/didri/Desktop/AI-Agents/AI-Agent/Huggingface Agent Course/unit 2.3 The LangGraph framework/Python Files/Building_your_first_langGraph.py"82
+# Model path: c:\Users\didri\Desktop\LLM-models\LLM-Models\GGUF-models\Langchain-llama-2-7b_langchain-chat-GGUF\llama-2-7b-langchain-chat-Q5_K_M.gguf
+# File exists: True
+# File size (MB): 4561.57
+
+# Processing legitimate email...
+# Alfred is processing an email from john.smith@exsample.com with subject: Question about your services
+# Alfred has marked the email as spam. Reason: None
+# The email has been moved to the spam folder.
+
+# Processing spam email...
+# Alfred is processing an email from Winner@lottery-int1.com with subject: YOU HAVE WON $5,000,000!!!
+# Alfred has marked the email as spam. Reason: None
+# The email has been moved to the spam folder.
+# Alfred is processing an email from john.smith@exsample.com with subject: Question about your services
+
+# ==================================================
+# Sir, you've received an email from john.smith@exsample.com.
+# Subject: Question about your services
+# Category: request
+
+# I've prepared a draft response for your review:
+# --------------------------------------------------
+
+#     Please include:
+#       -Greeting
+#       -Thank you for your interest
+#       -Acknowledgment of the referral
+#       -Suggestion for next steps
+    
+
+# As Alfred the butler, here is my draft response: 
+
+# Dear John, 
+
+# Thank you for reaching out to Mr. Hugg's Consulting Services regarding your interest in our offerings. I am delighted that a colleague of yours has recommended us, and we appreciate the opportunity to assist you with your needs. 
+
+# Please let me know if there is a specific area of consultation you would like to explore further, and Mr. Hugg will be more than happy to schedule a call at your earliest convenience next week. 
+
+# Once again, thank you for considering us, and we look forward to the possibility of working with you. 
+
+# Best regards,
+
+# Alfred Hugg
+
+# As his butler, I have drafted this response in Mr. Hugg's name for him to review and personalize before sending.
+# ==================================================
+
+# Image bytes length: 20841
+# PS C:\Users\didri\Desktop\AI-Agents\AI-Agent\Huggingface Agent Course> 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
