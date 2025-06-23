@@ -1,0 +1,42 @@
+Introduction to Use Case for Agentic RAG
+----------------------------------------------------------------------------------------
+In this unit, we will help Alfred, our friendly agent who is hosting the gala, by using Agentic RAG to create a tool that can be used to answer questions about the guests at the gala.
+
+This is a 'real-world' use case for Agentic RAG, that you could use in your own projects or workplaces. If you want to get more out of this project, why not try it out on your own use case and share in Discord?
+You can choose any of the frameworks discussed in the course for this use case. We provide code samples for each in separate tabs.
+
+A Gala to Remember
+Now, it’s time to get our hands dirty with an actual use case. Let’s set the stage!
+
+You decided to host the most extravagant and opulent party of the century. This means lavish feasts, enchanting dancers, renowned DJs, exquisite drinks, a breathtaking fireworks display, and much more.
+
+Alfred, your friendly neighbourhood agent, is getting ready to watch over all of your needs for this party, and Alfred is going to manage everything himself. To do so, he needs to have access to all of the information about the party, including the menu, the guests, the schedule, weather forecasts, and much more!
+
+Not only that, but he also needs to make sure that the party is going to be a success, so he needs to be able to answer any questions about the party during the party, whilst handling unexpected situations that may arise.
+
+He can’t do this alone, so we need to make sure that Alfred has access to all of the information and tools he needs.
+
+First, let’s give him a list of hard requirements for the gala.
+
+
+
+
+
+Agentic Retrieval Augmented Generation (RAG)
+----------------------------------------------------------------------------------------
+In this unit, we’ll be taking a look at how we can use Agentic RAG to help Alfred prepare for the amazing gala.
+
+We know we've already discussed Retrieval Augmented Generation (RAG) and agentic RAG in the previous unit, so feel free to skip ahead if you're already familiar with the concepts.
+LLMs are trained on enormous bodies of data to learn general knowledge. However, the world knowledge model of LLMs may not always be relevant and up-to-date information. RAG solves this problem by finding and retrieving relevant information from your data and forwarding that to the LLM.
+https://cdn-lfs-us-1.hf.co/repos/45/f4/45f48d5b3577034b76ee728dfe60afca3d0aa70790fda3e706eeb9276d8d5331/9065b3d6b1dd054ad8a74c335c5f0cee35e23fed04db66ceb811ff11398c8db0?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27rag.png%3B+filename%3D%22rag.png%22%3B&response-content-type=image%2Fpng&Expires=1750713221&Policy=eyJTdGF0ZW1lbnQiOlt7IkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc1MDcxMzIyMX19LCJSZXNvdXJjZSI6Imh0dHBzOi8vY2RuLWxmcy11cy0xLmhmLmNvL3JlcG9zLzQ1L2Y0LzQ1ZjQ4ZDViMzU3NzAzNGI3NmVlNzI4ZGZlNjBhZmNhM2QwYWE3MDc5MGZkYTNlNzA2ZWViOTI3NmQ4ZDUzMzEvOTA2NWIzZDZiMWRkMDU0YWQ4YTc0YzMzNWM1ZjBjZWUzNWUyM2ZlZDA0ZGI2NmNlYjgxMWZmMTEzOThjOGRiMD9yZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPSomcmVzcG9uc2UtY29udGVudC10eXBlPSoifV19&Signature=YM-IjTKaqjdDE0bjAuQGfI2M1E4afsRbm3bYhFONV5l8P5mPPgbupxDkLk3yUxlAwtrwEECUrSIeFr8DXdQJz7mbMbJyiZImlL3%7EvPeQpjKiNaRgvgBa7mDxvfrhU4kr7NwKPnbvqApJpjV8lyOOoVQ%7EEqOLQ61O6q3EtgUUU1gxHEPz5d3Cgrx7M9Q41l94HlV7NLQi01R3jWtiUxJriFSwQzLjGfUnnV5FT9vHkiF32KPVDAEBohTdnFrpjailO3Qsy6uR3VNbuVlKEjn4QME35%7ElfZaxhLGG9juCtpk3ys8gVcxjGUUAfz6zl9ncwyUh8t6tdhQIqpdRK6gbo%7Eg__&Key-Pair-Id=K24J24Z295AEI9
+
+
+
+Now, think about how Alfred works:
+
+We’ve asked Alfred to help plan a gala
+Alfred needs to find the latest news and weather information
+Alfred needs to structure and search the guest information
+Just as Alfred needs to search through your household information to be helpful, any agent needs a way to find and understand relevant data. Agentic RAG is a powerful way to use agents to answer questions about your data. We can pass various tools to Alfred to help him answer questions. However, instead of answering the question on top of documents automatically, Alfred can decide to use any other tool or flow to answer the question.
+
+http://cdn-lfs-us-1.hf.co/repos/45/f4/45f48d5b3577034b76ee728dfe60afca3d0aa70790fda3e706eeb9276d8d5331/a092c1f77e988b8ff484bff22b5e0192e8a00563b5b9f50f1bced23a399cf56d?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27agentic-rag.png%3B+filename%3D%22agentic-rag.png%22%3B&response-content-type=image%2Fpng&Expires=1750714075&Policy=eyJTdGF0ZW1lbnQiOlt7IkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc1MDcxNDA3NX19LCJSZXNvdXJjZSI6Imh0dHBzOi8vY2RuLWxmcy11cy0xLmhmLmNvL3JlcG9zLzQ1L2Y0LzQ1ZjQ4ZDViMzU3NzAzNGI3NmVlNzI4ZGZlNjBhZmNhM2QwYWE3MDc5MGZkYTNlNzA2ZWViOTI3NmQ4ZDUzMzEvYTA5MmMxZjc3ZTk4OGI4ZmY0ODRiZmYyMmI1ZTAxOTJlOGEwMDU2M2I1YjlmNTBmMWJjZWQyM2EzOTljZjU2ZD9yZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPSomcmVzcG9uc2UtY29udGVudC10eXBlPSoifV19&Signature=nEItQ3PzVgrPRoSYmiFB9HH3l~7z6-e2WFPquZ7QY9fOUXZl-BXMlrSXmcXGAKDM71ovl-ldl-X~Ws46cdv--PnC0Z7VRXRGiKOw3UlRuKuojeCsvq2tS1zjor2F3qX40SB6abiDBbkcK626cAeu~WLFlqXKAfp8d0aBG1aG8NaUvw1-M-DVyTVqM8pSE1IxKjDZhsMbS~Wnlz1eqjsGqxL2vO5joiAP-~gU7GnB-1KCOFepe7o4Lb5rOeLlwB77JamKU57stsf06yOGQXyCoKgoXPUnXqZ3YLw0rB63U8VvtiUhjgmQHMssuRjjYz5HmOziLgKZkHrAorcOJ0l-mw__&Key-Pair-Id=K24J24Z295AEI9
