@@ -1,13 +1,8 @@
 import datasets
 from langchain.docstore.document import Document
-
 #-------------------------------------#
 # Step 1: Load and Prepare the Dataset
 #--------------------------------------#
-
-
-
-
 # Load the dataset
 guest_dataset = datasets.load_dataset("agents-course/unit3-invitees", split="train")
 
@@ -29,6 +24,8 @@ docs = [
     # ● Load the dataset
     # ● Convert each guest entry into a Document object with formatted content
     # ● Store the Document objects in a list
+
+
 
 
 
@@ -57,7 +54,23 @@ class GuestInfoRetriever(Tool):
     def forward(self, query: str):
         results = self.retriever.get_relevant_documents(query)
         if results:
-            return "\n\n".join([doc.page_content for doc in results[:3]])
+            response_text = []
+            for doc in results[:3]: #Henter 3 første tabellene/dokumentene i datasettet
+                lines = doc.page_content.split("\n") 
+                name = ""
+                description = ""
+                for line in lines:
+                    if line.startswith("Name"): 
+                        name = line.split("Name: ")[1].strip()
+                    if line.startswith("Description"):
+                        description = line.split("Description: ")[1].strip()
+                
+                conversation_starter = f"Conversation starter: you could ask {name}  about {description.lower()}"
+                response = doc.page_content + "\n" + conversation_starter
+                response_text.append(response)
+            
+        if results:
+            return "\n\n".join(response_text)
         else:
             return "No mathing guest information found"
         
@@ -92,7 +105,7 @@ print("🎩 Alfred's Response:")
 print(response)
 
 ####OUTPUT#######
-│                                                                                                                                                                                                                                                                                       ││ Tell me about our guest named 'Lady Ada Lovelace                                                                                                                                                                                                                                      ││                                                                                                                                                                                                                                                                                       │╰─ InferenceClientModel - Qwen/Qwen2.5-Coder-32B-Instruct ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Step 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#                                                                                                                                                                                                                                                                                ││ Tell me about our guest named 'Lady Ada Lovelace                                                                                                                                                                                                                                      ││                                                                                                                                                                                                                                                                                       │╰─ InferenceClientModel - Qwen/Qwen2.5-Coder-32B-Instruct ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Step 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #  ─ Executing parsed code: ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
 #   lady_ada_info = Guest_Info_Retreiver(query="Lady Ada Lovelace")                                                                                                                                                                                                                        
 #   print(lady_ada_info)                                                                                                                                                                                                                                                                   
@@ -141,3 +154,30 @@ print(response)
 # PS C:\Users\didri\Desktop\AI-Agents\AI-Agent\Huggingface Agent Course> 
 
 
+
+
+
+
+
+
+
+#---------------------------------------#
+#         Example Interaction
+#---------------------------------------#
+# During the gala, a conversation might flow like this:
+    # You: “Alfred, who is that gentleman talking to the ambassador?”
+    # Alfred: quickly searches the guest database “That’s Dr. Nikola Tesla, sir. He’s an old friend from your university days.
+    # He’s recently patented a new wireless energy transmission system and would be delighted to discuss it with you. Just remember he’s passionate about pigeons, so that might make for good small talk.”
+
+
+
+#---------------------------------------#
+#          Taking It Further
+#---------------------------------------#
+# Now that Alfred can retrieve guest information, consider how you might enhance this system:
+
+# 1. Improve the retriever to use a more sophisticated algorithm like sentence-transformers
+# 2. Implement a conversation memory so Alfred remembers previous interactions
+# 3. Combine with web search to get the latest information on unfamiliar guests
+# 4. Integrate multiple indexes to get more complete information from verified sources
+#Now Alfred is fully equipped to handle guest inquiries effortlessly, ensuring your gala is remembered as the most sophisticated and delightful event of the century!
