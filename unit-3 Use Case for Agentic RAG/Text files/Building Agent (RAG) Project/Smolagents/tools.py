@@ -17,11 +17,60 @@ print(results)
 # Expected output: The current President of France in Emmanuel Macron.
 
 
+#-----------------------------------------------------------------------------------------#
+# Creating a Custom Tool that can be used to get the latest news about a specific topic.
+#-----------------------------------------------------------------------------------------#
+from newsapi import NewsApiClient
+class GetLatestNewsTool(Tool):
+    name="Latest_news"
+    description="Fetch the latest breaking headline news worldwide. supports filtering by keyword, country, category, or specific sources."
+    inputs = {
+        "Query": {
+            "type": "string",
+            "description": "keywords or phrase to search for in headlines."
+        },
+        "Country": {
+            "type": "string",
+            "descripton": "2-letter country code (e.g., 'us', 'gb'). optional",
+            "required": False
+        },
+        "category": {
+            "type": "string",
+            "description": "News category (e.g, 'buisness', 'sports'). optional",
+            "required": False
+        },
+        "sources": {
+            "type": "string",
+            "description": "Comma-seperated list of news source ID'S to get headliens from. Optional",
+            "required": False
+        }
+    }
+    output = {
+        "articles": {
+            "type": "list",
+            "description": "List of matching news articles. Each article contains: "
+                            "`source` (ID and name), `author`, `title`, `description`,"
+                            "`url`, `urlToImage`, `PublishedAtt`, and `content`."
+        }
+    }
+    
+    def __init__(self, api_key):
+        self.newsapi = NewsApiClient(api_key=api_key)
+
+    def run(self, Query=None, Country=None, Category=None, sources= None):
+        """
+        Run the tool: Call NewsApi with the provided filters.
+        """
+        
+
+
+
+
+
 
 #------------------------------------------------------------------------------#
 # Creating a Custom Tool for Weather Information to Schedule the Fireworks
 #------------------------------------------------------------------------------#
-
 from smolagents import Tool
 import random 
 
@@ -95,7 +144,7 @@ from smolagents import CodeAgent, InferenceClientModel
 model = InferenceClientModel()
 
 alfred = CodeAgent(
-    tools=[search_tool, weather_info_tool, hub_stats_tool]
+    tools=[search_tool, weather_info_tool, hub_stats_tool],
     model=model
 )
 
@@ -110,3 +159,5 @@ print(response)
 # Conclusion
 #--------------------------------------------------------#
 #By integrating these tools, Alfred is now equipped to handle a variety of tasks, from web searches to weather updates and model statistics. This ensures he remains the most informed and engaging host at the gala.
+
+
